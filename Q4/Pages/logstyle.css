@@ -139,3 +139,7 @@ span.psw {
         width: 100%;
     }
 }
+
+#faildlogin {
+    color: red;
+}

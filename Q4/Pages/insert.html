@@ -15,11 +15,15 @@
     <script src="../Scripts/ajaxCalls.js"></script>
     <script>
         $(document).ready(function () {
+
             $("#logformat").hide();
             $("#username").hide();
             $("#getTV").click(getTV);
             $(document).on("click", ".BTNadd", addNews);
+
+
             tmp = [];
+
             $(document).on("click", "#login", loginf);
             $("#lform").submit(checkUser);
             $(document).on("click", "#register", Registerf);
@@ -30,6 +34,14 @@
         function closeWindow() {
             $("#logformat").hide();
             $("#Registerform").hide();
+            $("#FirstName").val("");
+            $("#LastName").val("");
+            $("#Birthday").val("");
+            $("#Mail").val("");
+            $("#psw").val("");
+            $("#lPassword").val("");
+            $("#lMail").val("");
+            $("#faildlogin").html("");
         }
 
         function Registerf() {
@@ -84,6 +96,7 @@
             if ($("#login").val() == "sign out") {
                 $("#register").show();
                 $("#login").prop("value", "Login")
+                $("#username").html("");
             }
             else {
                 $("#logformat").show();
@@ -110,16 +123,19 @@
 
         function getUsrSuccess(username) {
             console.log(username);
-            if (username == "") {
+            if (username.Firstname == "") {
                 str = "The user name or password are not exist";
                 $("#faildlogin").html(str);
 
             }
             else {
+
+                localStorage[0] = JSON.stringify(username);
+                console.log(localStorage[0]);
                 $("#register").hide();
                 $("#login").prop("value", "sign out")
                 $("#username").show();
-                str = username;
+                str = username.Firstname;
                 $("#username").html(str);
                 $("#logformat").hide();
             }
@@ -193,6 +209,12 @@
         }
 
         function addNews() {
+            console.log($("#username").html());
+        
+            if ($("#username").html() == "") {
+                alert("You can't add article until you are login!")
+                return false;
+            }
             B = {
 
                 SeriesId: tmp[this.id].SeriesId.substring(13, tmp[this.id].SeriesId.length),
@@ -232,7 +254,7 @@
         <div id="log">
             <label id="username"><b> </b></label>
             <!--<button id="login" value="Login" name="Login"></button>-->
-            <input type="button" id="login" value="Login"/>
+            <input type="button" id="login" value="Login" />
             <button id="register">register</button>
         </div>
     </div>

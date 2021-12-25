@@ -41,7 +41,7 @@ namespace Q4.Models
 
         }
 
-        public string Read(string mail, string password)
+        public User Read(string mail, string password)
         {
             DBUser dbs = new DBUser();
             return dbs.Read(mail, password);

@@ -24,7 +24,7 @@ namespace Q4.Controllers
             return "value";
         }
 
-        public string Get(string mail , string password)
+        public User Get(string mail , string password)
         {
             User user = new User();
             return user.Read(mail, password);

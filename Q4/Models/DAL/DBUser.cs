@@ -70,7 +70,7 @@ namespace Q4.Models.DAL
         }
 
 
-        public string Read(string mail, string password)
+        public User Read(string mail, string password)
         {
             SqlConnection con = null;
 
@@ -82,14 +82,14 @@ namespace Q4.Models.DAL
 
                 SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
                 //User U = new User();
-                string str = "";
-               
+                User newUser = new User();
                 if (dr.Read() == true)
                 {    
-                   str = (string)dr["Firstname"];
+                   newUser.Firstname = (string)dr["Firstname"];
+                   newUser.Password = (string)dr["Password"];
                 }
 
-                return str;
+                return newUser;
                
             }
             catch (Exception ex)
