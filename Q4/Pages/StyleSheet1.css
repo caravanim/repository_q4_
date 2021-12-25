@@ -1,0 +1,36 @@
+﻿
+img {
+    width: 250px;
+    height: 250px;
+}
+
+.RVDIV {
+    Border: 1px solid black;
+    width: 400px;
+    padding-left: 20px;
+}
+
+.top div {
+    float: left;
+}
+
+#head1 {
+    height: 30px;
+    background-color: #b2d4f2;
+}
+
+#head1 #head {
+    float: left;
+    padding-top: 5px;
+
+}
+
+#head1 #log {
+    float: right;
+    padding-top: 5px;
+}
+
+
+
+
+

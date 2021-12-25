@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="StyleSheet1.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <title></title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="StyleSheet1.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    <script src="../Scripts/ajaxCallsWithKey.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            tmp2 = [];
+            j = 0;
+            ajaxCall("GET", "../api/News", "", getANewsSuccessCB, getANewsErrorCB);
+            $("#pForm").submit(SubR)
+
+        });
+
+        function getANewsSuccessCB(addedNews) {
+            console.log(addedNews)
+
+            arr = [];
+            for (var i = 0; i < addedNews.length; i++) {
+                arr.push(addedNews[i].SeriesName);
+            }
+            const resultArr = arr.filter((data, index) => {
+                return arr.indexOf(data) === index;
+            });
+            console.log(resultArr);
+
+            str = '<select onchange="GetNews1(this.value)"><option>Series names</option>';
+            for (var i = 0; i < resultArr.length; i++) {
+                str += '<option value="' + resultArr[i] + '">' + resultArr[i] + "</option>";
+            }
+            str += "</select>";
+            $("#ph").append(str);
+        }
+
+        function getANewsErrorCB(Error) {
+            console.log("The server was unable to retrieve the data")
+        }
+
+        function GetNews1(value) {
+
+            let QueryString = "../api/News?Sname=" + value;
+            console.log(QueryString);
+            ajaxCall("GET", QueryString, "", getANSuccessCB, getANErrorCB);
+
+        }
+
+        function getANSuccessCB(status2) {
+
+            str = "";
+            for (var i = 0; i < status2.length; i++) {
+                str += " <h2>" + status2[i].SeriesHeader + "</h2>";
+                str += "<p>" + status2[i].SeriesShort + "</p>";
+                str += "<p>" + status2[i].SeriesFound + "</p>";
+                str += "<p>" + status2[i].Date + "</p>";
+                str += "<img src='" + status2[i].Image + "'/> <br/>";
+                str += "<a href='" + status2[i].Link + "'>link to the article</a><br/><br/>";
+                str += '<button type="button" ' + i + ' class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> send review </button><br/><br/>';
+                tmp2.push(status2[i].SeriesId);
+            }
+            $("#ph2").html(str);
+            console.log(tmp2);
+
+
+        }
+
+        function getANErrorCB(err) {
+            console.log("The server was unable to retrieve the data");
+        }
+
+        function SubR() {
+            let criticName = $("#name").val();
+            let email = $("#email").val();
+            let rate = $("#rate").val();
+            let review = $("#review").val();
+
+            R = {
+                ArticleId: tmp2[j],
+                Date: new Date(),
+                CriticName: criticName,
+                Email: email,
+                Rate: rate,
+                ReviewS: review
+            }
+            j++;
+            console.log("R" + R);
+            $("#name").val("");
+            $("#email").val("");
+            $("#rate").val("");
+            $("#review").val("");
+
+            ajaxCall("POST", "../api/Review", JSON.stringify(R), postRSuccess, postRError)
+            return false;
+        }
+
+        function postRSuccess(status) {
+            console.log(status);
+        }
+
+        function postRError(err) {
+            console.log("The data was not uploaded to the server");
+        }
+
+    </script>
+
+
+</head>
+<body>
+    <div class="top">
+        <div id="ph">
+
+        </div>
+        <div>
+            <button class="GFG"
+                    onclick="window.location.href = '../Pages/AllReviews.html';">
+                <!---->
+                Let's go to the reviews
+            </button>
+        </div>
+        <div id="ph2">
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Insert A Review</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="pForm">
+                        <div class="form-group">
+                            <label>your name</label>
+                            <input type="text" maxlength="30" class="form-control" id="name" placeholder="Enter the your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter the email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>rate</label>
+                            <input type="number" min="1" max="5" class="form-control" id="rate" placeholder="Enter the rate (between 1 and 5)" required />
+                        </div>
+                        <div class="form-group">
+                            <label>your Review</label>
+                            <input type="text" minlength="10" maxlength="200" class="form-control" id="review" placeholder="Enter the review" required />
+                        </div>
+
+                        <input type="submit" value="Submit" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

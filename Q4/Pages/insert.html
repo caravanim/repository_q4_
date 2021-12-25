@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="registerstyle.css" rel="stylesheet" />
+    <link href="logstyle.css" rel="stylesheet" />
+    <link href="StyleSheet1.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+    </script>
+    <script src="../Scripts/ajaxCallsWithKey.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#logformat").hide();
+            $("#getTV").click(getTV);
+            $(document).on("click", ".BTNadd", addNews);
+            tmp = [];
+            $(document).on("click", "#login", loginf);
+            $(document).on("click", "#register", Registerf);
+
+        });
+
+        function Registerf() {
+            $("#Registerform").show();
+
+            var modal = document.getElementById("Registerform");
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            let firstName = $("#FirstName").val();
+            let lastName = $("#LastName").val();
+            let birthday = $("#Birthday").val();
+            let mail = $("#Mail").val();
+            let psw = $("#psw").val();
+
+            R = {
+                Firstname : firstName,
+                Lastname : lastName,
+                Birthday : birthday,
+                Mail : mail,
+                Password : psw
+            }
+
+            $("#FirstName").val("");
+            $("#LastName").val("");
+            $("#Birthday").val("");
+            $("#Mail").val("");
+            $("#psw").val("");
+
+            ajaxCall("POST", "../api/Users", JSON.stringify(R), postRSuccess, postRError)
+
+        
+
+            return false;
+        }
+
+
+        function loginf() {
+            $("#logformat").show();
+            //$(".close").onclick(function () {
+            //    modal.style.display = "none";
+            //});
+            // Get the modal
+            var modal = document.getElementById('logformat');
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+
+
+        function getTV() {
+            if (tmp != null) {
+                tmp = [];
+            }
+            let name = $("#tvShowName").val();
+            let apiCall = "https://imdb8.p.rapidapi.com/title/find?q=" + name;
+            ajaxCall2("GET", apiCall, "", getTVSuccessCB, getTVErrorCB);
+        }
+
+        function getTVSuccessCB(tv) {//יוצר מערך רק של הת.ז של הסדרה
+            seriesName1 = tv.query;
+            SeriesArray = [];
+            console.log(tv);
+            let result = tv.results[0].id.substring(7, tv.results[0].id.length - 1);
+            console.log(result);
+            let apiCall2 = "https://imdb8.p.rapidapi.com/title/get-news?tconst=" + result + "&limit=10";
+            ajaxCall2("GET", apiCall2, "", getTvNewsSuccessCB, getTvNewsErrorCB);
+        }
+
+        function getTVErrorCB(err) {
+            console.log("The server was unable to retrieve the data");
+        }
+
+
+        function getTvNewsSuccessCB(NewsArray) {
+
+            str = "";
+            for (var i = 0; i < NewsArray.items.length; i++) {
+                str += " <h2>" + NewsArray.items[i].head + "</h2>";
+                str += "<p>" + NewsArray.items[i].body + "</p>";
+                str += "<p>" + NewsArray.items[i].source.label + "</p>";
+                str += "<p>" + NewsArray.items[i].publishDateTime + "</p>";
+                str += "<img src='" + NewsArray.items[i].image.url + "'/> <br/>";
+                str += "<a href='" + NewsArray.items[i].link + "'>link to the article</a><br/><br/>";
+                str += "<button id='" + i + "'class='BTNadd'> Add </button><br/><br/>";
+            }
+
+            for (var i = 0; i < NewsArray.items.length; i++) {
+                A = {
+                    SeriesId: NewsArray.items[i].id,
+                    SeriesName: seriesName1,
+                    SeriesHeader: NewsArray.items[i].head,
+                    SeriesShort: NewsArray.items[i].body,
+                    SeriesFound: NewsArray.items[i].source.label,
+                    Date: NewsArray.items[i].publishDateTime,
+                    Image: NewsArray.items[i].image.url,
+                    Link: NewsArray.items[i].link
+                }
+                tmp.push(A);
+            }
+
+            document.getElementById("ph").innerHTML = str;
+            console.log(tmp);
+        }
+
+        function getTvNewsErrorCB(err) {
+            console.log("The server was unable to retrieve the data");
+        }
+
+        function addNews() {
+            B = {
+
+                SeriesId: tmp[this.id].SeriesId.substring(13, tmp[this.id].SeriesId.length),
+                SeriesName: seriesName1,
+                SeriesHeader: tmp[this.id].SeriesHeader,
+                SeriesShort: tmp[this.id].SeriesShort,
+                SeriesFound: tmp[this.id].SeriesFound,
+                Date: tmp[this.id].Date,
+                Image: tmp[this.id].Image,
+                Link: tmp[this.id].Link
+            }
+            console.log(B);
+            console.log(JSON.stringify(B));
+
+            ajaxCall("POST", "../api/News", JSON.stringify(B), postSuccess, postError)
+        }
+
+        function postSuccess(status1) {
+            console.log(status1);
+        }
+        function postError(Error) {
+            console.log("The data was not uploaded to the server");
+        }
+    </script>
+</head>
+<body>
+
+    <div id="head1">
+        <div id="head">
+            <input type="text" id="tvShowName" />
+            <button id="getTV">Get TV Show</button>
+            <button class="GFG"
+                    onclick="window.location.href = '../Pages/view.html';">
+                Let's go to the news
+            </button>
+        </div>
+        <div id="log">
+            <button id="login">Login</button>
+            <button data-toggle="modal" id="register">register</button>
+        </div>
+    </div>
+
+
+    <!--login form  -->
+    <div id="logformat" class="modal">
+        <form class="modal-content animate" action="/action_page.php" method="post">
+            <div class="imgcontainer">
+                <span class="close" title="Close Modal">&times;</span>
+                <img src="../img/img_avatar2.png" alt="Avatar" class="avatar">
+            </div>
+            <div class="container">
+                <label for="uname"><b>Mail</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+
+                <button type="submit">Login</button>
+
+            </div>
+        </form>
+    </div>
+
+    <!--Register form  -->
+        <div id="Registerform" class="modal">
+            <form class="modal-content animate" action="/action_page.php" method="post">
+                <div class="imgcontainer">
+                    <span class="close" title="Close Modal">&times;</span>
+                </div>
+                <div class="container">
+                    <label for="Fname"><b>First Name</b></label>
+                    <input type="text" id="FirstName" placeholder="Enter First Name" name="FirstName" required>
+
+                    <label for="Lname"><b>Last Name</b></label>
+                    <input type="text"  id="LastName" placeholder="Enter Last Name" name="LastName" required>
+
+                    <label for="Lname"><b>Birthday</b></label>
+                    <input type="date"  id="Birthday" placeholder="Enter Birthday" name="Birthday" required>
+
+                    <label for="Mail"><b>Mail</b></label>
+                    <input type="text" id="Mail" placeholder="Enter Mail" name="Mail" required>
+
+                    <label for="psw"><b>Password</b></label>
+                    <input type="password" id="psw" placeholder="Enter Password" name="psw" required>
+
+                    <button type="submit">Login</button>
+
+                </div>
+            </form>
+        </div>
+        <div id="ph"> </div>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="StyleSheet1.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
+    <script src="../Scripts/ajaxCallsWithKey.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            ajaxCall("GET", "../api/Review", "", getARSuccess, getARError);
+
+        });
+
+        function getARSuccess(status3) {
+            console.log(status3);
+            str = "<h1> All of your's reviews </h1> ";
+            for (var i = 0; i < status3.length; i++) {
+                str += "<div class='RVDIV'>";
+                str += " <h3> The critic name: " + status3[i].CriticName + "</h3>";
+                str += "<p>Article id: " + status3[i].ArticleId + "</p>";
+                str += "<p>Date: " + status3[i].Date + "</p>";
+                str += "<p>Email: " + status3[i].Email + "</p>";
+                str += "<p> Article rating: " + status3[i].Rate + "</p>";
+                str += "<p> The review: " + status3[i].ReviewS + "</p><br/><br/>";
+                str += "</div><br/><br/> ";
+
+            }
+            $("#ph2").html(str);
+        }
+
+        function getARError(err) {
+            console.log(err);
+        }
+
+
+    </script>
+
+</head>
+<body>
+    <div id="ph2">
+        
+    </div>
+</body>
+</html>
