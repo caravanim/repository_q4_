@@ -24,6 +24,13 @@ namespace Q4.Controllers
             return "value";
         }
 
+        public string Get(string mail , string password)
+        {
+            User user = new User();
+            return user.Read(mail, password);
+        }
+
+
         // POST api/<controller>
         public int Post([FromBody] User user)
         {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Configuration;
+using System.Web.Security;
 
 namespace Q4.Models.DAL
 {
@@ -66,5 +68,54 @@ namespace Q4.Models.DAL
             cmd.CommandTimeout = 5; // seconds
             return cmd;
         }
+
+
+        public string Read(string mail, string password)
+        {
+            SqlConnection con = null;
+
+            try
+            {
+                con = Connect("Users_2022");
+
+                SqlCommand selectcommand = Createselect(mail, password, con);
+
+                SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
+                //User U = new User();
+                string str = "";
+               
+                if (dr.Read() == true)
+                {    
+                   str = (string)dr["Firstname"];
+                }
+
+                return str;
+               
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("failed to find a user", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+        }
+
+        SqlCommand Createselect(string mail, string password, SqlConnection con)
+        {
+            string sqlString = "select* from  Users_2022 where Mail = @mail and Password = @password ";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@mail", mail);
+            cmd.Parameters.AddWithValue("@password", password);
+
+            return cmd;
+        }
+
+
+
     }
 }

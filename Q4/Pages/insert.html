@@ -16,13 +16,21 @@
     <script>
         $(document).ready(function () {
             $("#logformat").hide();
+            $("#username").hide();
             $("#getTV").click(getTV);
             $(document).on("click", ".BTNadd", addNews);
             tmp = [];
             $(document).on("click", "#login", loginf);
+            $("#lform").submit(checkUser);
             $(document).on("click", "#register", Registerf);
-
+            $("#Rform").submit(CreateNewUser);
+            $(document).on("click", ".close", closeWindow);       
         });
+
+        function closeWindow() {
+            $("#logformat").hide();
+            $("#Registerform").hide();
+        }
 
         function Registerf() {
             $("#Registerform").show();
@@ -34,7 +42,11 @@
                     modal.style.display = "none";
                 }
             }
+           
+        }
 
+        function CreateNewUser()
+        {
             let firstName = $("#FirstName").val();
             let lastName = $("#LastName").val();
             let birthday = $("#Birthday").val();
@@ -42,11 +54,11 @@
             let psw = $("#psw").val();
 
             R = {
-                Firstname : firstName,
-                Lastname : lastName,
-                Birthday : birthday,
-                Mail : mail,
-                Password : psw
+                Firstname: firstName,
+                Lastname: lastName,
+                Birthday: birthday,
+                Mail: mail,
+                Password: psw
             }
 
             $("#FirstName").val("");
@@ -55,28 +67,68 @@
             $("#Mail").val("");
             $("#psw").val("");
 
-            ajaxCall("POST", "../api/Users", JSON.stringify(R), postRSuccess, postRError)
+            ajaxCall("POST", "../api/Users", JSON.stringify(R), postUFSuccess, postUFError)
+            $("#Registerform").hide();
+            return false;
+        }
 
-        
+        function postUFSuccess(status) {
+            console.log(status);
+        }
+
+        function postUFError(err) {
+            console.log("The user was not uploaded to the server");
+        }
+
+        function loginf() {
+            if ($("#login").val() == "sign out") {
+                $("#register").show();
+                $("#login").prop("value", "Login")
+            }
+            else {
+                $("#logformat").show();
+                var modal = document.getElementById('logformat');
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            }
+         
+        }
+
+        function checkUser() {
+            let mail = $("#lMail").val();
+            let password = $("#lPassword").val();
+            let apiCall = "../api/Users?mail=" + mail + "&password=" + password;
+            ajaxCall("GET", apiCall, "", getUsrSuccess, getUsrError);
 
             return false;
         }
 
-
-        function loginf() {
-            $("#logformat").show();
-            //$(".close").onclick(function () {
-            //    modal.style.display = "none";
-            //});
-            // Get the modal
-            var modal = document.getElementById('logformat');
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
+        function getUsrSuccess(username) {
+            console.log(username);
+            if (username == "") {
+                str = "The user name or password are not exist";
+                $("#faildlogin").html(str);
             }
+            else {
+                $("#register").hide();
+                $("#login").prop("value", "sign out")
+                $("#username").show();
+                str = username;
+                $("#username").html(str);
+                $("#logformat").hide();
+            }
+        
+
+        }
+
+        function getUsrError(err) {
+            alert("The user name or password are not exist");
+            console.log(err);
         }
 
 
@@ -166,7 +218,7 @@
     </script>
 </head>
 <body>
-
+    <h3> </h3>
     <div id="head1">
         <div id="head">
             <input type="text" id="tvShowName" />
@@ -177,27 +229,29 @@
             </button>
         </div>
         <div id="log">
-            <button id="login">Login</button>
-            <button data-toggle="modal" id="register">register</button>
+            <label id="username"><b> </b></label>
+            <!--<button id="login" value="Login" name="Login"></button>-->
+            <input type="button" id="login" value="Login"/>
+            <button id="register">register</button>
         </div>
     </div>
 
 
     <!--login form  -->
     <div id="logformat" class="modal">
-        <form class="modal-content animate" action="/action_page.php" method="post">
+        <form id="lform" class="modal-content animate" action="/action_page.php" method="post">
             <div class="imgcontainer">
                 <span class="close" title="Close Modal">&times;</span>
                 <img src="../img/img_avatar2.png" alt="Avatar" class="avatar">
             </div>
             <div class="container">
                 <label for="uname"><b>Mail</b></label>
-                <input type="text" placeholder="Enter Username" name="uname" required>
+                <input type="text" id="lMail" placeholder="Enter Username" name="uname" required>
 
                 <label for="psw"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="psw" required>
-
-                <button type="submit">Login</button>
+                <input type="password" id="lPassword" placeholder="Enter Password" name="psw" required>
+                <div><p id="faildlogin"> </p></div>
+                <button type="submit" id="loginbtn">Login</button>
 
             </div>
         </form>
@@ -205,7 +259,7 @@
 
     <!--Register form  -->
         <div id="Registerform" class="modal">
-            <form class="modal-content animate" action="/action_page.php" method="post">
+            <form id="Rform" class="modal-content animate" action="/action_page.php" method="post">
                 <div class="imgcontainer">
                     <span class="close" title="Close Modal">&times;</span>
                 </div>
@@ -225,7 +279,7 @@
                     <label for="psw"><b>Password</b></label>
                     <input type="password" id="psw" placeholder="Enter Password" name="psw" required>
 
-                    <button type="submit">Login</button>
+                    <button type="submit" id="newUser">Create an account</button>
 
                 </div>
             </form>
