@@ -11,10 +11,10 @@ namespace ExeBeni1.Controllers
     public class ReviewController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<Review> Get()
+        public IEnumerable<Review> Get(string UserName)
         {
             Review article1 = new Review();
-            return article1.Read();
+            return article1.Read(UserName);
         }
 
 

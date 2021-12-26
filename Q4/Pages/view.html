@@ -25,6 +25,8 @@
             j = 0;
             ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).Mail, "", getANewsSuccessCB, getANewsErrorCB);
             $("#pForm").submit(SubR);
+            $("#name").val(JSON.parse(localStorage[0]).Firstname);
+            $("#email").val(JSON.parse(localStorage[0]).Mail);
             $(document).on("click", "#login", loginf);
             $("#lform").submit(checkUser);
             $(document).on("click", "#register", Registerf);
@@ -106,6 +108,10 @@
                 $("#register").show();
                 $("#login").prop("value", "Login")
                 $("#username").html("");
+                $("#ph").html("");
+                $("#ph2").html("");
+                window.location.href = '../Pages/insert.html';
+
             }
             else {
                 $("#logformat").show();
@@ -178,16 +184,28 @@
             str += "</select>";
             $("#ph").append(str);
 
+
+
+        }
+
+        function GetNews1(value) {
+
+            ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).Mail + "&SRname = " + value, "", getANSuccessCB, getANErrorCB);
+
+        }
+
+        function getANSuccessCB(status2) {
+
             str = "";
-            for (var i = 0; i < addedNews.length; i++) {
-                str += " <h2>" + addedNews[i].SeriesHeader + "</h2>";
-                str += "<p>" + addedNews[i].SeriesShort + "</p>";
-                str += "<p>" + addedNews[i].SeriesFound + "</p>";
-                str += "<p>" + addedNews[i].Date + "</p>";
-                str += "<img src='" + addedNews[i].Image + "'/> <br/>";
-                str += "<a href='" + addedNews[i].Link + "'>link to the article</a><br/><br/>";
+            for (var i = 0; i < status2.length; i++) {
+                str += " <h2>" + status2[i].SeriesHeader + "</h2>";
+                str += "<p>" + status2[i].SeriesShort + "</p>";
+                str += "<p>" + status2[i].SeriesFound + "</p>";
+                str += "<p>" + status2[i].Date + "</p>";
+                str += "<img src='" + status2[i].Image + "'/> <br/>";
+                str += "<a href='" + status2[i].Link + "'>link to the article</a><br/><br/>";
                 str += '<button type="button" ' + i + ' class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> send review </button><br/><br/>';
-                tmp2.push(addedNews[i].SeriesId);
+                tmp2.push(status2[i].SeriesId);
             }
             $("#ph2").html(str);
             console.log(tmp2);
@@ -195,40 +213,13 @@
 
         }
 
+        function getANErrorCB(err) {
+            console.log("The server was unable to retrieve the data");
+        }
+
         function getANewsErrorCB(Error) {
             console.log("The server was unable to retrieve the data")
         }
-
-        //function GetNews1(value) {
-
-        //    let QueryString = "../api/News?Sname=" + value;
-        //    console.log(QueryString);
-        //    ajaxCall("GET", QueryString, "", getANSuccessCB, getANErrorCB);
-
-        //}
-
-        //function getANSuccessCB(status2) {
-
-        //    //str = "";
-        //    //for (var i = 0; i < status2.length; i++) {
-        //    //    str += " <h2>" + status2[i].SeriesHeader + "</h2>";
-        //    //    str += "<p>" + status2[i].SeriesShort + "</p>";
-        //    //    str += "<p>" + status2[i].SeriesFound + "</p>";
-        //    //    str += "<p>" + status2[i].Date + "</p>";
-        //    //    str += "<img src='" + status2[i].Image + "'/> <br/>";
-        //    //    str += "<a href='" + status2[i].Link + "'>link to the article</a><br/><br/>";
-        //    //    str += '<button type="button" ' + i + ' class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> send review </button><br/><br/>';
-        //    //    tmp2.push(status2[i].SeriesId);
-        //    //}
-        //    //$("#ph2").html(str);
-        //    //console.log(tmp2);
-
-
-        //}
-
-        //function getANErrorCB(err) {
-        //    console.log("The server was unable to retrieve the data");
-        //}
 
         function SubR() {
             let criticName = $("#name").val();

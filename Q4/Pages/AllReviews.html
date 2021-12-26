@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title></title>
     <link href="StyleSheet1.css" rel="stylesheet" />
+    <link href="logstyle.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous"></script>
@@ -11,9 +12,118 @@
     <script src="../Scripts/ajaxCalls.js"></script>
     <script>
         $(document).ready(function () {
-            ajaxCall("GET", "../api/Review", "", getARSuccess, getARError);
+            ajaxCall("GET", "../api/Review?UserName= " + JSON.parse(localStorage[0]).Mail, "", getARSuccess, getARError);
+            $(document).on("click", "#login", loginf);
+            $("#lform").submit(checkUser);
+            $(document).on("click", "#register", Registerf);
+            $("#Rform").submit(CreateNewUser);
+            $(document).on("click", ".close", closeWindow);
+
+            if (localStorage[0] != undefined) {
+                name = JSON.parse(localStorage[0]).Firstname;
+                $("#username").html(name);
+                $("#register").css("display", "none");
+                $("#login").prop("value", "sign out");
+            }
 
         });
+
+
+
+        function closeWindow() {
+            $("#logformat").hide();
+            $("#Registerform").hide();
+            $("#FirstName").val("");
+            $("#LastName").val("");
+            $("#Birthday").val("");
+            $("#Mail").val("");
+            $("#psw").val("");
+            $("#lPassword").val("");
+            $("#lMail").val("");
+            $("#faildlogin").html("");
+        }
+
+        function Registerf() {
+            $("#Registerform").show();
+
+            var modal = $("#Registerform")[0];
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+        }
+
+        function CreateNewUser() {
+            let firstName = $("#FirstName").val();
+            let lastName = $("#LastName").val();
+            let birthday = $("#Birthday").val();
+            let mail = $("#Mail").val();
+            let psw = $("#psw").val();
+
+            R = {
+                Firstname: firstName,
+                Lastname: lastName,
+                Birthday: birthday,
+                Mail: mail,
+                Password: psw
+            }
+
+            $("#FirstName").val("");
+            $("#LastName").val("");
+            $("#Birthday").val("");
+            $("#Mail").val("");
+            $("#psw").val("");
+
+            ajaxCall("POST", "../api/Users", JSON.stringify(R), postUFSuccess, postUFError)
+            $("#Registerform").hide();
+            return false;
+        }
+
+        function postUFSuccess(status) {
+            console.log(status);
+        }
+
+        function postUFError(err) {
+            console.log("The user was not uploaded to the server");
+        }
+
+        function loginf() {
+            if ($("#login").val() == "sign out") {
+                $("#register").show();
+                $("#login").prop("value", "Login")
+                $("#username").html("");
+                $("#ph").html("");
+                $("#ph2").html("");
+                window.location.href = '../Pages/insert.html';
+
+            }
+            else {
+                $("#logformat").show();
+                var modal = $("#logformat")[0];
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            }
+
+        }
+
+        function checkUser() {
+            let mail = $("#lMail").val();
+            let password = $("#lPassword").val();
+            let apiCall = "../api/Users?mail=" + mail + "&password=" + password;
+            ajaxCall("GET", apiCall, "", getUsrSuccess, getUsrError);
+            $("#lPassword").val("");
+            $("#lMail").val("");
+            return false;
+        }
+
 
         function getARSuccess(status3) {
             console.log(status3);
@@ -41,8 +151,105 @@
 
 </head>
 <body>
+
+    <div id="head1">
+        <div id="log">
+            <label id="username"><b> </b></label>
+            <input type="button" id="login" value="Login" />
+            <button id="register">register</button>
+        </div>
+    </div>
+
     <div id="ph2">
-        
+
+    </div>
+
+
+    <!--reviews form  -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Insert A Review</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="pForm">
+                        <div class="form-group">
+                            <label>your name</label>
+                            <input type="text" maxlength="30" class="form-control" id="name" placeholder="Enter the your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter the email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>rate</label>
+                            <input type="number" min="1" max="5" class="form-control" id="rate" placeholder="Enter the rate (between 1 and 5)" required />
+                        </div>
+                        <div class="form-group">
+                            <label>your Review</label>
+                            <input type="text" minlength="10" maxlength="200" class="form-control" id="review" placeholder="Enter the review" required />
+                        </div>
+
+                        <input type="submit" value="Submit" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--login form  -->
+    <div id="logformat" class="modal">
+        <form id="lform" class="modal-content animate" action="/action_page.php" method="post">
+            <div class="imgcontainer">
+                <span class="close" title="Close Modal">&times;</span>
+                <img src="../img/img_avatar2.png" alt="Avatar" class="avatar">
+            </div>
+            <div class="container">
+                <label for="uname"><b>Mail</b></label>
+                <input type="text" id="lMail" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" id="lPassword" placeholder="Enter Password" name="psw" required>
+                <div><p id="faildlogin"> </p></div>
+                <button type="submit" id="loginbtn">Login</button>
+
+            </div>
+        </form>
+    </div>
+
+    <!--Register form  -->
+    <div id="Registerform" class="modal">
+        <form id="Rform" class="modal-content animate" action="/action_page.php" method="post">
+            <div class="imgcontainer">
+                <span class="close" title="Close Modal">&times;</span>
+            </div>
+            <div class="container">
+                <label for="Fname"><b>First Name</b></label>
+                <input type="text" id="FirstName" placeholder="Enter First Name" name="FirstName" required>
+
+                <label for="Lname"><b>Last Name</b></label>
+                <input type="text" id="LastName" placeholder="Enter Last Name" name="LastName" required>
+
+                <label for="Lname"><b>Birthday</b></label>
+                <input type="date" id="Birthday" placeholder="Enter Birthday" name="Birthday" required>
+
+                <label for="Mail"><b>Mail</b></label>
+                <input type="text" id="Mail" placeholder="Enter Mail" name="Mail" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" id="psw" placeholder="Enter Password" name="psw" required>
+
+                <button type="submit" id="newUser">Create an account</button>
+
+            </div>
+        </form>
     </div>
 </body>
 </html>

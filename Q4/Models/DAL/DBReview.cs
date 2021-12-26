@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Data.SqlClient;
 using System.Web.Configuration;
+using System.Data;
 
 namespace ExeBeni1.DAL
 {
@@ -66,9 +67,63 @@ namespace ExeBeni1.DAL
         
 
 
-        public List<Review> Read()
+        public List<Review> Read(string UserName)
         {
-            return ReviewList;
+            SqlConnection con = null;
+
+            List<Review> RList = new List<Review>();
+            try
+            {
+                con = Connect("REVIEW_2022");
+
+                SqlCommand selectcommand = Createselect(UserName, con);
+
+                SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
+
+                while (dr.Read() == true)
+                {
+                    Review A = new Review();
+                    A.ArticleId = (int)dr["articleId"];
+                    A.CriticName = (string)dr["criticName"];
+                    A.Email = (string)dr["email"];
+                    //A.Date = (DateTime)dr["date"];
+                    A.Rate = (int)dr["rate"];
+                    A.ReviewS = (string)dr["reviewS"];
+
+
+                    RList.Add(A);
+                }
+                return RList;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("failed to find a user", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        SqlCommand Createselect(string UserName, SqlConnection con)
+        {
+            string sqlString = "select* from  REVIEW_2022 where Mail = @mail";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@mail", UserName);
+
+            return cmd;
+        }
+
+        SqlCommand createCommand(SqlConnection con, string CommandSTR)
+        {
+            SqlCommand cmd = new SqlCommand();  // create the command object
+            cmd.Connection = con;               // assign the connection to the command object
+            cmd.CommandText = CommandSTR;       // can be Select, Insert, Update, Delete
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandTimeout = 5; // seconds
+            return cmd;
         }
     }
 }

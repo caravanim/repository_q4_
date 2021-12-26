@@ -126,9 +126,9 @@ namespace Q1.Models
                 SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
 
 
-                if (dr.Read() == true)
+                while (dr.Read() == true)
                 {
-                    string S = (string)dr["seriesId"];
+                    int S = (int)dr["seriesId"];
 
 
                     try
@@ -139,20 +139,10 @@ namespace Q1.Models
 
                         SqlDataReader drA = selectcommandA.ExecuteReader(CommandBehavior.CloseConnection);
 
-
-
-                        if (dr.Read() == true)
+                        while (drA.Read() == true)
                         {
                             Article A = new Article();
-                            A.SeriesId = (int)drA["seriesId"];
                             A.SeriesName= (string)drA["seriesName"];
-                            A.SeriesHeader = (string)drA["seriesHeader"];
-                            A.SeriesShort = (string)drA["SeriesShort"];
-                            A.SeriesFound = (string)drA["SeriesFound"];
-                            A.Date = (DateTime)drA["SeriesFound"];
-                            A.Image= (string)drA["imageUrl"];
-                            A.Link = (string)drA["link"];
-
                             AList.Add(A);
                         }
                     }
@@ -162,7 +152,7 @@ namespace Q1.Models
                     }
                     finally
                     {
-                        con.Close();
+                        conA.Close();
                     }
 
                 }
@@ -191,7 +181,7 @@ namespace Q1.Models
             return cmd;
         }
 
-        SqlCommand CreateselectA(string S, SqlConnection con)
+        SqlCommand CreateselectA(int S, SqlConnection con)
         {
             string sqlString = "select* from  ARTICAL_2022 where seriesId = @S";
             SqlCommand cmd = createCommand(con, sqlString);
@@ -212,5 +202,84 @@ namespace Q1.Models
             cmd.CommandTimeout = 5; // seconds
             return cmd;
         }
+
+
+        public List<Article> Read(string Sname, string SRname)
+        {
+            SqlConnection con = null;
+            SqlConnection conA = null;
+            List<Article> AList = new List<Article>();
+            try
+            {
+                con = Connect("UsersArticles_2022");
+
+                SqlCommand selectcommand = Createselect(Sname, con);
+
+                SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
+
+
+                while (dr.Read() == true)
+                {
+                    int S = (int)dr["seriesId"];
+                    try
+                    {
+                        conA = Connect("ARTICAL_2022");
+
+                        SqlCommand selectcommandSR = CreateselectSR(S, SRname, conA);
+
+                        SqlDataReader drSR = selectcommandSR.ExecuteReader(CommandBehavior.CloseConnection);
+
+                        while (drSR.Read() == true)
+                        {
+                            Article A = new Article();
+                            A.SeriesId = (int)drSR["seriesId"];
+                            A.SeriesName = (string)drSR["seriesName"];
+                            A.SeriesHeader = (string)drSR["seriesHeader"];
+                            A.SeriesShort = (string)drSR["SeriesShort"];
+                            A.SeriesFound = (string)drSR["SeriesFound"];
+                            //A.Date = (DateTime)drSR["date"];
+                            A.Image = (string)drSR["imageUrl"];
+                            A.Link = (string)drSR["link"];
+
+                            AList.Add(A);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("failed to find a user", ex);
+                    }
+                    finally
+                    {
+                        conA.Close();
+                    }
+
+                }
+
+                return AList;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("failed to find a user", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+        }
+
+        SqlCommand CreateselectSR(int S, string SRname,SqlConnection con)
+        {
+            string sqlString = "select* from  ARTICAL_2022 where seriesId = @S and serierName = @SRname";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@S", S);
+            cmd.Parameters.AddWithValue("@SRname", SRname);
+
+            return cmd;
+        }
+
     }
 }

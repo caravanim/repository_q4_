@@ -24,6 +24,12 @@ namespace Q2.Controllers
             return article3.Read(Sname);
         }
 
+        public IEnumerable<Article> Get(string Sname, string SRname)
+        {
+            Article article3 = new Article();
+            return article3.Read(Sname, SRname);
+        }
+
         // POST api/<controller>
         public int Post(string Userid, [FromBody] Article article )
         {

@@ -58,5 +58,11 @@ namespace Q1.Models
             DBArticle dbs = new DBArticle();
             return dbs.Read(Sname);
         }
+
+        public List<Article> Read(string Sname, string SRname)
+        {
+            DBArticle dbs = new DBArticle();
+            return dbs.Read(Sname, SRname);
+        }
     }
 }
