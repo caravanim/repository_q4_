@@ -171,6 +171,7 @@ namespace Q1.Models
 
 
         }
+       
         SqlCommand Createselect(string Sname, SqlConnection con)
         {
             string sqlString = "select* from  UsersArticles_2022 where Mail = @mail";
@@ -272,11 +273,11 @@ namespace Q1.Models
 
         SqlCommand CreateselectSR(int S, string SRname,SqlConnection con)
         {
-            string sqlString = "select* from  ARTICAL_2022 where seriesId = @S and serierName = @SRname";
+            string sqlString = "select* from  ARTICAL_2022 where seriesId =@S and seriesName = @SRname";
             SqlCommand cmd = createCommand(con, sqlString);
 
             cmd.Parameters.AddWithValue("@S", S);
-            cmd.Parameters.AddWithValue("@SRname", SRname);
+            cmd.Parameters.AddWithValue("@SRname", "'"+SRname+"'");
 
             return cmd;
         }

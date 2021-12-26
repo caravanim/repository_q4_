@@ -189,13 +189,10 @@
         }
 
         function GetNews1(value) {
-
             ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).Mail + "&SRname = " + value, "", getANSuccessCB, getANErrorCB);
-
         }
 
         function getANSuccessCB(status2) {
-
             str = "";
             for (var i = 0; i < status2.length; i++) {
                 str += " <h2>" + status2[i].SeriesHeader + "</h2>";
