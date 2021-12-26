@@ -215,12 +215,12 @@ namespace Q1.Models
 
                 SqlCommand selectcommand = Createselect(Sname, con);
 
-                SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
+                SqlDataReader drF = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
 
 
-                while (dr.Read() == true)
+                while (drF.Read() == true)
                 {
-                    int S = (int)dr["seriesId"];
+                    int S = (int)drF["seriesId"];
                     try
                     {
                         conA = Connect("ARTICAL_2022");
