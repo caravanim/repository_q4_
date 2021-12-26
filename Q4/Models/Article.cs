@@ -40,10 +40,10 @@ namespace Q1.Models
         }
 
 
-        public int Insert()
+        public int Insert(string Userid)
         {
             DBArticle dbs = new DBArticle();
-            return dbs.Insert(this);
+            return dbs.Insert(Userid, this);
         }
 
         public List<Article> Read()

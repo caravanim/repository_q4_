@@ -87,6 +87,7 @@ namespace Q4.Models.DAL
                 {    
                    newUser.Firstname = (string)dr["Firstname"];
                    newUser.Password = (string)dr["Password"];
+                   newUser.Mail = (string)dr["Mail"];
                 }
 
                 return newUser;

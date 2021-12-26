@@ -25,10 +25,10 @@ namespace Q2.Controllers
         }
 
         // POST api/<controller>
-        public int Post([FromBody] Article article)
+        public int Post(string Userid, [FromBody] Article article )
         {
 
-           return article.Insert();
+           return article.Insert(Userid);
 
 
         }

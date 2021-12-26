@@ -9,11 +9,11 @@ namespace Q1.Models
 {
     public class DBArticle
     {
-
-      
+       
         static List<Article> ArticleList;
-        public int Insert(Article article)
+        public int Insert(string Userid, Article article)
         {
+            ArticleList = new List<Article>();
             if (ArticleList == null)
             {
                 ArticleList = new List<Article>();
@@ -21,16 +21,22 @@ namespace Q1.Models
             ArticleList.Add(article);
 
             SqlConnection con = null;
-          
+            SqlConnection conUA = null;
+            int numEffected = 0;
+            int numEffectedUA = 0;
 
             try
             {
+               
                 con = Connect("ARTICAL_2022");
+                conUA = ConnectUA("UsersArticles_2022");
 
                 SqlCommand command = Createinsert(article, con);
+                SqlCommand commandUA = CreateinsertUA(Userid,article, conUA);
 
-                int numEffected = command.ExecuteNonQuery();
 
+                numEffected = command.ExecuteNonQuery();
+                numEffectedUA = commandUA.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -40,9 +46,17 @@ namespace Q1.Models
             {
                 con.Close();
             }
-            return 1;
+            return numEffected+ numEffectedUA;
         }
 
+        SqlConnection ConnectUA(string connectstringname)
+        {
+            string connectionString = WebConfigurationManager.ConnectionStrings[connectstringname].ConnectionString;
+            SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            return con;
+        }
+        
         SqlConnection Connect ( string connectstringname)
         {
             string connectionString = WebConfigurationManager.ConnectionStrings[connectstringname].ConnectionString;
@@ -61,6 +75,17 @@ namespace Q1.Models
 
             string sqlString = "INSERT INTO ARTICAL_2022 ([seriesId],[seriesName],[seriesHeader],[seriesShort],[seriesFound],[date],[imageUrl], [link] ) "
                 + "VALUES (" + article.SeriesId + ",'" + article.SeriesName + "','" + article.SeriesHeader + "','" + article.SeriesShort + "','" + article.SeriesFound + "','" + article.Date + "','" + article.Image + "','" + article.Link+"')";
+            SqlCommand command = new SqlCommand(sqlString, con);
+            command.CommandTimeout = 5; // after 5 secoend it will return a timeout exception
+            command.CommandType = System.Data.CommandType.Text;
+            return command;
+        }
+
+        SqlCommand CreateinsertUA(string Userid,Article article, SqlConnection con)
+        {
+
+            string sqlString = "INSERT INTO UsersArticles_2022 ([Mail],[seriesId]) "
+                + "VALUES ('" + Userid + "','" + article.SeriesId  + "')";
             SqlCommand command = new SqlCommand(sqlString, con);
             command.CommandTimeout = 5; // after 5 secoend it will return a timeout exception
             command.CommandType = System.Data.CommandType.Text;
@@ -86,6 +111,6 @@ namespace Q1.Models
             return ArticalNewsList;
         }
 
-  
+
     }
 }

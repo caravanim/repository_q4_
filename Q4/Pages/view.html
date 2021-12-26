@@ -1,11 +1,14 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <link href="logstyle.css" rel="stylesheet" />
     <link href="StyleSheet1.css" rel="stylesheet" />
     <meta charset="utf-8" />
     <title></title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+    <link href="logstyle.css" rel="stylesheet" />
+    <link href="StyleSheet1.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -15,12 +18,26 @@
             crossorigin="anonymous"></script>
     <script src="../Scripts/ajaxCallsWithKey.js"></script>
     <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="../Scripts/globalscript.js"></script>
     <script>
         $(document).ready(function () {
             tmp2 = [];
             j = 0;
             ajaxCall("GET", "../api/News", "", getANewsSuccessCB, getANewsErrorCB);
-            $("#pForm").submit(SubR)
+            $("#pForm").submit(SubR);
+            $(document).on("click", "#login", loginf);
+            $("#lform").submit(checkUser);
+            $(document).on("click", "#register", Registerf);
+            $("#Rform").submit(CreateNewUser);
+            $(document).on("click", ".close", closeWindow);
+
+            if (localStorage[0] != undefined) {
+                name = JSON.parse(localStorage[0]).Firstname;
+                $("#username").html(name);
+                $("#register").css("display", "none");
+                $("#login").prop("value", "sign out");
+
+            }
 
         });
 
@@ -117,22 +134,29 @@
 
 </head>
 <body>
-    <div class="top">
         <div id="ph">
 
         </div>
-        <div>
-            <button class="GFG"
-                    onclick="window.location.href = '../Pages/AllReviews.html';">
-                <!---->
-                Let's go to the reviews
-            </button>
+        <div id="head1">
+            <div id="head">
+                <button class="GFG"
+                        onclick="window.location.href = '../Pages/AllReviews.html';">
+                    Let's go to the reviews
+                </button>
+                </div>
+                <div id="log">
+                    <label id="username"><b> </b></label>
+                    <input type="button" id="login" value="Login" />
+                    <button id="register">register</button>
+                </div>
         </div>
-        <div id="ph2">
+            <div id="ph2">
 
-        </div>
-    </div>
+            </div>
 
+
+
+    <!--reviews form  -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -169,6 +193,54 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!--login form  -->
+    <div id="logformat" class="modal">
+        <form id="lform" class="modal-content animate" action="/action_page.php" method="post">
+            <div class="imgcontainer">
+                <span class="close" title="Close Modal">&times;</span>
+                <img src="../img/img_avatar2.png" alt="Avatar" class="avatar">
+            </div>
+            <div class="container">
+                <label for="uname"><b>Mail</b></label>
+                <input type="text" id="lMail" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" id="lPassword" placeholder="Enter Password" name="psw" required>
+                <div><p id="faildlogin"> </p></div>
+                <button type="submit" id="loginbtn">Login</button>
+
+            </div>
+        </form>
+    </div>
+
+    <!--Register form  -->
+    <div id="Registerform" class="modal">
+        <form id="Rform" class="modal-content animate" action="/action_page.php" method="post">
+            <div class="imgcontainer">
+                <span class="close" title="Close Modal">&times;</span>
+            </div>
+            <div class="container">
+                <label for="Fname"><b>First Name</b></label>
+                <input type="text" id="FirstName" placeholder="Enter First Name" name="FirstName" required>
+
+                <label for="Lname"><b>Last Name</b></label>
+                <input type="text" id="LastName" placeholder="Enter Last Name" name="LastName" required>
+
+                <label for="Lname"><b>Birthday</b></label>
+                <input type="date" id="Birthday" placeholder="Enter Birthday" name="Birthday" required>
+
+                <label for="Mail"><b>Mail</b></label>
+                <input type="text" id="Mail" placeholder="Enter Mail" name="Mail" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" id="psw" placeholder="Enter Password" name="psw" required>
+
+                <button type="submit" id="newUser">Create an account</button>
+
+            </div>
+        </form>
     </div>
 
 </body>
