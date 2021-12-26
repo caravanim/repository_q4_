@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Data.SqlClient;
 using System.Web.Configuration;
+using System.Data;
 
 namespace Q1.Models
 {
@@ -98,19 +99,118 @@ namespace Q1.Models
             return ArticleList;
         }
 
+        //public List<Article> Read(string Sname)
+        //{
+        //    List<Article> ArticalNewsList = new List<Article>();
+        //    foreach (Article f in ArticleList)
+        //    {
+        //        if (f.SeriesName == Sname)
+        //        {
+        //            ArticalNewsList.Add(f);
+        //        }
+        //    }
+        //    return ArticalNewsList;
+        //}
+
         public List<Article> Read(string Sname)
         {
-            List<Article> ArticalNewsList = new List<Article>();
-            foreach (Article f in ArticleList)
+            SqlConnection con = null;
+            SqlConnection conA = null;
+            List<Article> AList = new List<Article>();
+            try
             {
-                if (f.SeriesName == Sname)
+                con = Connect("UsersArticles_2022");
+
+                SqlCommand selectcommand = Createselect(Sname, con);
+
+                SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
+
+
+                if (dr.Read() == true)
                 {
-                    ArticalNewsList.Add(f);
+                    string S = (string)dr["seriesId"];
+
+
+                    try
+                    {
+                        conA = Connect("ARTICAL_2022");
+
+                        SqlCommand selectcommandA = CreateselectA(S, conA);
+
+                        SqlDataReader drA = selectcommandA.ExecuteReader(CommandBehavior.CloseConnection);
+
+
+
+                        if (dr.Read() == true)
+                        {
+                            Article A = new Article();
+                            A.SeriesId = (int)drA["seriesId"];
+                            A.SeriesName= (string)drA["seriesName"];
+                            A.SeriesHeader = (string)drA["seriesHeader"];
+                            A.SeriesShort = (string)drA["SeriesShort"];
+                            A.SeriesFound = (string)drA["SeriesFound"];
+                            A.Date = (DateTime)drA["SeriesFound"];
+                            A.Image= (string)drA["imageUrl"];
+                            A.Link = (string)drA["link"];
+
+                            AList.Add(A);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("failed to find a user", ex);
+                    }
+                    finally
+                    {
+                        con.Close();
+                    }
+
                 }
+
+                return AList;
+
             }
-            return ArticalNewsList;
+            catch (Exception ex)
+            {
+                throw new Exception("failed to find a user", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+        }
+        SqlCommand Createselect(string Sname, SqlConnection con)
+        {
+            string sqlString = "select* from  UsersArticles_2022 where Mail = @mail";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@mail", Sname);
+
+            return cmd;
+        }
+
+        SqlCommand CreateselectA(string S, SqlConnection con)
+        {
+            string sqlString = "select* from  ARTICAL_2022 where seriesId = @S";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@S", S);
+
+            return cmd;
         }
 
 
+
+        SqlCommand createCommand(SqlConnection con, string CommandSTR)
+        {
+            SqlCommand cmd = new SqlCommand();  // create the command object
+            cmd.Connection = con;               // assign the connection to the command object
+            cmd.CommandText = CommandSTR;       // can be Select, Insert, Update, Delete
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandTimeout = 5; // seconds
+            return cmd;
+        }
     }
 }
