@@ -57,6 +57,7 @@ namespace Q1.Models
             article.SeriesHeader = article.SeriesHeader.Replace("'", "''");
             article.SeriesFound = article.SeriesFound.Replace("'", "''");
             article.SeriesName = article.SeriesName.Replace("'", "''");
+            article.Image = article.Image.Replace("'", "''");
 
             string sqlString = "INSERT INTO ARTICAL_2022 ([seriesId],[seriesName],[seriesHeader],[seriesShort],[seriesFound],[date],[imageUrl], [link] ) "
                 + "VALUES (" + article.SeriesId + ",'" + article.SeriesName + "','" + article.SeriesHeader + "','" + article.SeriesShort + "','" + article.SeriesFound + "','" + article.Date + "','" + article.Image + "','" + article.Link+"')";

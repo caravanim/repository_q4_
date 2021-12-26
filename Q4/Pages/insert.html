@@ -47,7 +47,7 @@
         function Registerf() {
             $("#Registerform").show();
 
-            var modal = document.getElementById("Registerform");
+            var modal = $("#Registerform")[0];
             // When the user clicks anywhere outside of the modal, close it
             window.onclick = function (event) {
                 if (event.target == modal) {
@@ -100,8 +100,8 @@
             }
             else {
                 $("#logformat").show();
-                var modal = document.getElementById('logformat');
-
+                var modal = $("#logformat")[0];
+               
                 // When the user clicks anywhere outside of the modal, close it
                 window.onclick = function (event) {
                     if (event.target == modal) {
@@ -123,7 +123,7 @@
 
         function getUsrSuccess(username) {
             console.log(username);
-            if (username.Firstname == "") {
+            if (username.Firstname == null) {
                 str = "The user name or password are not exist";
                 $("#faildlogin").html(str);
 
@@ -209,9 +209,9 @@
         }
 
         function addNews() {
-            console.log($("#username").html());
+            console.log($("#username").text());
         
-            if ($("#username").html() == "") {
+            if ($("#username").text() == " ") {
                 alert("You can't add article until you are login!")
                 return false;
             }
