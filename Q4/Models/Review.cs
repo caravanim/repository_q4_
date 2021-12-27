@@ -32,10 +32,10 @@ namespace ExeBeni1.Models
         public int Rate { get => rate; set => rate = value; }
         public string ReviewS { get => reviewS; set => reviewS = value; }
 
-        public int Insert()
+        public int Insert(int userid_R)
         {
             DBReview dbs = new DBReview();
-            return dbs.Insert(this);
+            return dbs.Insert(userid_R, this);
 
         }
 

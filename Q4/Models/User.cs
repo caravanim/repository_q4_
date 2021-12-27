@@ -8,6 +8,7 @@ namespace Q4.Models
 {
     public class User
     {
+        int userId;
         string firstname;
         string lastname;
         DateTime birthday;
@@ -21,13 +22,24 @@ namespace Q4.Models
 
         public User(string firstname, string lastname, DateTime birthday, string mail, string password)
         {
-            Firstname = firstname;
-            Lastname = lastname;
-            Birthday = birthday;
-            Mail = mail;
-            Password = password;
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.birthday = birthday;
+            this.mail = mail;
+            this.password = password;
         }
 
+        public User(int userId, string firstname, string lastname, DateTime birthday, string mail, string password)
+        {
+            this.userId = userId;
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.birthday = birthday;
+            this.mail = mail;
+            this.password = password;
+        }
+
+        public int UserId { get => userId; set => userId = value; }
         public string Firstname { get => firstname; set => firstname = value; }
         public string Lastname { get => lastname; set => lastname = value; }
         public DateTime Birthday { get => birthday; set => birthday = value; }

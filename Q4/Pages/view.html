@@ -23,7 +23,7 @@
         $(document).ready(function () {
             tmp2 = [];
             j = 0;
-            ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).Mail, "", getANewsSuccessCB, getANewsErrorCB);
+            ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).UserId, "", getANewsSuccessCB, getANewsErrorCB);
             $("#pForm").submit(SubR);
             $("#name").val(JSON.parse(localStorage[0]).Firstname);
             $("#email").val(JSON.parse(localStorage[0]).Mail);
@@ -189,7 +189,7 @@
         }
 
         function GetNews1(value) {
-            ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).Mail + "&SRname = " + value, "", getANSuccessCB, getANErrorCB);
+            ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).UserId + "&SRname=" + value, "", getANSuccessCB, getANErrorCB);
         }
 
         function getANSuccessCB(status2) {
@@ -212,6 +212,7 @@
 
         function getANErrorCB(err) {
             console.log("The server was unable to retrieve the data");
+            console.log(err)
         }
 
         function getANewsErrorCB(Error) {
@@ -239,7 +240,7 @@
             $("#rate").val("");
             $("#review").val("");
 
-            ajaxCall("POST", "../api/Review", JSON.stringify(R), postRSuccess, postRError)
+            ajaxCall("POST", "../api/Review?userid_R=" + JSON.parse(localStorage[0]).UserId, JSON.stringify(R), postRSuccess, postRError)
             return false;
         }
 

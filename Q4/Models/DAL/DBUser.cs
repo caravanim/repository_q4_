@@ -84,7 +84,8 @@ namespace Q4.Models.DAL
                 //User U = new User();
                 User newUser = new User();
                 if (dr.Read() == true)
-                {    
+                {
+                   newUser.UserId = (int)dr["id"]; 
                    newUser.Firstname = (string)dr["Firstname"];
                    newUser.Password = (string)dr["Password"];
                    newUser.Mail = (string)dr["Mail"];
@@ -107,7 +108,7 @@ namespace Q4.Models.DAL
 
         SqlCommand Createselect(string mail, string password, SqlConnection con)
         {
-            string sqlString = "select* from  Users_2022 where Mail = @mail and Password = @password ";
+            string sqlString = "select * from  Users_2022 where Mail = @mail and Password = @password ";
             SqlCommand cmd = createCommand(con, sqlString);
 
             cmd.Parameters.AddWithValue("@mail", mail);

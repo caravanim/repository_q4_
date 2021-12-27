@@ -12,7 +12,7 @@ namespace ExeBeni1.DAL
     public class DBReview
     {
         static List<Review> ReviewList;
-        public int Insert(Review review)
+        public int Insert(int userid_R, Review review)
         {
             if (ReviewList == null)
             {
@@ -26,7 +26,7 @@ namespace ExeBeni1.DAL
             {
                 con = Connect("REVIEW_2022");
 
-                SqlCommand command = Createinsert(review, con);
+                SqlCommand command = Createinsert(userid_R, review, con);
 
                 int numEffected = command.ExecuteNonQuery();
 
@@ -50,12 +50,10 @@ namespace ExeBeni1.DAL
             return con;
         }
 
-        SqlCommand Createinsert(Review review, SqlConnection con)
+        SqlCommand Createinsert(int userid_R, Review review, SqlConnection con)
         {
-
-
-            string sqlString = "INSERT INTO REVIEW_2022 ([articleId],[criticName],[email],[date],[rate],[reviewS]) "
-            + "VALUES (" + review.ArticleId + ",'" + review.CriticName + "','" + review.Email + "','" + review.Date + "'," + review.Rate + ",'" + review.ReviewS + "')";
+            string sqlString = "INSERT INTO REVIEW_2022 ([userId],[articleId],[criticName],[email],[date],[rate],[reviewS]) "
+            + "VALUES (" + userid_R + ",'"+ review.ArticleId + ",'" + review.CriticName + "','" + review.Email + "','" + review.Date + "'," + review.Rate + ",'" + review.ReviewS + "')";
             SqlCommand command = new SqlCommand(sqlString, con);
             command.CommandTimeout = 5; // after 5 secoend it will return a timeout exception
             command.CommandType = System.Data.CommandType.Text;
@@ -63,9 +61,6 @@ namespace ExeBeni1.DAL
 
            
         }
-
-        
-
 
         public List<Review> Read(string UserName)
         {
@@ -80,13 +75,13 @@ namespace ExeBeni1.DAL
 
                 SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
 
-                while (dr.Read() == true)
+                while (dr.Read())
                 {
                     Review A = new Review();
                     A.ArticleId = (int)dr["articleId"];
                     A.CriticName = (string)dr["criticName"];
                     A.Email = (string)dr["email"];
-                    //A.Date = (DateTime)dr["date"];
+                    A.Date = Convert.ToDateTime(dr["date"]);
                     A.Rate = (int)dr["rate"];
                     A.ReviewS = (string)dr["reviewS"];
 
@@ -108,10 +103,10 @@ namespace ExeBeni1.DAL
 
         SqlCommand Createselect(string UserName, SqlConnection con)
         {
-            string sqlString = "select* from  REVIEW_2022 where Mail = @mail";
+            string sqlString = "select* from  REVIEW_2022 where id = @id";
             SqlCommand cmd = createCommand(con, sqlString);
 
-            cmd.Parameters.AddWithValue("@mail", UserName);
+            cmd.Parameters.AddWithValue("@id", UserName);
 
             return cmd;
         }

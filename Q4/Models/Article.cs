@@ -40,17 +40,17 @@ namespace Q1.Models
         }
 
 
-        public int Insert(string Userid)
+        public int Insert(int Userid)
         {
             DBArticle dbs = new DBArticle();
             return dbs.Insert(Userid, this);
         }
 
-        public List<Article> Read()
-        {
-            DBArticle dbs = new DBArticle();
-            return dbs.Read();
-        }
+        //public List<Article> Read()
+        //{
+        //    DBArticle dbs = new DBArticle();
+        //    return dbs.Read();
+        //}
 
 
         public List<Article> Read(string Sname)
@@ -61,8 +61,8 @@ namespace Q1.Models
 
         public List<Article> Read(string Sname, string SRname)
         {
-            DBArticle dbs = new DBArticle();
-            return dbs.Read(Sname, SRname);
+            DBArticle dbs1 = new DBArticle();
+            return dbs1.Read(Sname, SRname);
         }
     }
 }

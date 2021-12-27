@@ -25,9 +25,9 @@ namespace ExeBeni1.Controllers
         }
 
         // POST api/<controller>
-        public int Post([FromBody] Review review)
+        public int Post(int userid_R, [FromBody] Review review)
         {
-            return review.Insert();
+            return review.Insert(userid_R);
         }
 
 

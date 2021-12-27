@@ -12,7 +12,7 @@
     <script src="../Scripts/ajaxCalls.js"></script>
     <script>
         $(document).ready(function () {
-            ajaxCall("GET", "../api/Review?UserName= " + JSON.parse(localStorage[0]).Mail, "", getARSuccess, getARError);
+            ajaxCall("GET", "../api/Review?UserName=" + JSON.parse(localStorage[0]).UserId, "", getARSuccess, getARError);
             $(document).on("click", "#login", loginf);
             $("#lform").submit(checkUser);
             $(document).on("click", "#register", Registerf);

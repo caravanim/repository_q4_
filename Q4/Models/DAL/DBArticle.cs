@@ -11,15 +11,15 @@ namespace Q1.Models
     public class DBArticle
     {
        
-        static List<Article> ArticleList;
-        public int Insert(string Userid, Article article)
+        //static List<Article> ArticleList;
+        public int Insert(int Userid, Article article)
         {
-            ArticleList = new List<Article>();
-            if (ArticleList == null)
-            {
-                ArticleList = new List<Article>();
-            }
-            ArticleList.Add(article);
+            //ArticleList = new List<Article>();
+            //if (ArticleList == null)
+            //{
+            //    ArticleList = new List<Article>();
+            //}
+            //ArticleList.Add(article);
 
             SqlConnection con = null;
             SqlConnection conUA = null;
@@ -82,10 +82,10 @@ namespace Q1.Models
             return command;
         }
 
-        SqlCommand CreateinsertUA(string Userid,Article article, SqlConnection con)
+        SqlCommand CreateinsertUA(int Userid,Article article, SqlConnection con)
         {
 
-            string sqlString = "INSERT INTO UsersArticles_2022 ([Mail],[seriesId]) "
+            string sqlString = "INSERT INTO UsersArticles_2022 ([id],[seriesId]) "
                 + "VALUES ('" + Userid + "','" + article.SeriesId  + "')";
             SqlCommand command = new SqlCommand(sqlString, con);
             command.CommandTimeout = 5; // after 5 secoend it will return a timeout exception
@@ -94,10 +94,10 @@ namespace Q1.Models
         }
 
 
-        public List<Article> Read()
-        {
-            return ArticleList;
-        }
+        //public List<Article> Read()
+        //{
+        //    return ArticleList;
+        //}
 
         //public List<Article> Read(string Sname)
         //{
@@ -174,10 +174,10 @@ namespace Q1.Models
        
         SqlCommand Createselect(string Sname, SqlConnection con)
         {
-            string sqlString = "select* from  UsersArticles_2022 where Mail = @mail";
+            string sqlString = "select* from  UsersArticles_2022 where id = @id";
             SqlCommand cmd = createCommand(con, sqlString);
 
-            cmd.Parameters.AddWithValue("@mail", Sname);
+            cmd.Parameters.AddWithValue("@id", Sname);
 
             return cmd;
         }
@@ -200,7 +200,7 @@ namespace Q1.Models
             cmd.Connection = con;               // assign the connection to the command object
             cmd.CommandText = CommandSTR;       // can be Select, Insert, Update, Delete
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandTimeout = 5; // seconds
+            cmd.CommandTimeout = 20; // seconds
             return cmd;
         }
 
@@ -219,7 +219,7 @@ namespace Q1.Models
                 SqlDataReader drF = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
 
 
-                while (drF.Read() == true)
+                while (drF.Read())
                 {
                     int S = (int)drF["seriesId"];
                     try
@@ -230,7 +230,7 @@ namespace Q1.Models
 
                         SqlDataReader drSR = selectcommandSR.ExecuteReader(CommandBehavior.CloseConnection);
 
-                        while (drSR.Read() == true)
+                        while (drSR.Read())
                         {
                             Article A = new Article();
                             A.SeriesId = (int)drSR["seriesId"];
@@ -271,13 +271,13 @@ namespace Q1.Models
 
         }
 
-        SqlCommand CreateselectSR(int S, string SRname,SqlConnection con)
+        SqlCommand CreateselectSR(int S, string SRname,SqlConnection conA)
         {
-            string sqlString = "select* from  ARTICAL_2022 where seriesId =@S and seriesName = @SRname";
-            SqlCommand cmd = createCommand(con, sqlString);
+            string sqlString = "select* from  ARTICAL_2022 where seriesId = @S and seriesName = @SRname";
+            SqlCommand cmd = createCommand(conA, sqlString);
 
             cmd.Parameters.AddWithValue("@S", S);
-            cmd.Parameters.AddWithValue("@SRname", "'"+SRname+"'");
+            cmd.Parameters.AddWithValue("@SRname", SRname);
 
             return cmd;
         }

@@ -234,7 +234,7 @@
             console.log(B);
             console.log(JSON.stringify(B));
 
-            ajaxCall("POST", "../api/News?Userid="+JSON.parse(localStorage[0]).Mail, JSON.stringify(B), postSuccess, postError)
+            ajaxCall("POST", "../api/News?Userid="+JSON.parse(localStorage[0]).UserId, JSON.stringify(B), postSuccess, postError)
            
         }
 

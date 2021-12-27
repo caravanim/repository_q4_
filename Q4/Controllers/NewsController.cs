@@ -11,11 +11,11 @@ namespace Q2.Controllers
     public class NewsController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<Article> Get()
-        {
-            Article article1 = new Article();
-            return article1.Read();
-        }
+        //public IEnumerable<Article> Get()
+        //{
+        //    Article article1 = new Article();
+        //    return article1.Read();
+        //}
 
         // GET api/<controller>/5
         public IEnumerable<Article> Get(string Sname)
@@ -26,12 +26,12 @@ namespace Q2.Controllers
 
         public IEnumerable<Article> Get(string Sname, string SRname)
         {
-            Article article3 = new Article();
-            return article3.Read(Sname, SRname);
+            Article article = new Article();
+            return article.Read(Sname, SRname);
         }
 
         // POST api/<controller>
-        public int Post(string Userid, [FromBody] Article article )
+        public int Post(int Userid, [FromBody] Article article )
         {
 
            return article.Insert(Userid);
