@@ -39,7 +39,7 @@ namespace ExeBeni1.Models
 
         }
 
-        public List<Review> Read(string UserName)
+        public List<Review> Read(int UserName)
         {
             DBReview dbs = new DBReview();
             return dbs.Read(UserName);

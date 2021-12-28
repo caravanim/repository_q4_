@@ -2,7 +2,6 @@
 <html>
 
 <head>
-    <link href="registerstyle.css" rel="stylesheet" />
     <link href="logstyle.css" rel="stylesheet" />
     <link href="StyleSheet1.css" rel="stylesheet" />
     <meta charset="utf-8" />
@@ -22,7 +21,7 @@
             $("#username").hide();
             $("#getTV").click(getTV);
             $(document).on("click", ".BTNadd", addNews);
-
+            $(document).on("click", ".GFG", goToNews);
 
             tmp = [];
 
@@ -32,6 +31,18 @@
             $("#Rform").submit(CreateNewUser);
             $(document).on("click", ".close", closeWindow);       
         });
+
+        function goToNews() {
+            if ($("#username").text() == " ") {
+                alert("You can't can't go to this page until you are login!")
+            }
+            else {
+               window.location.href = '../Pages/view.html';
+            }
+        }
+
+       
+
 
         function closeWindow() {
             $("#logformat").hide();
@@ -252,8 +263,7 @@
         <div id="head">
             <input type="text" id="tvShowName" />
             <button id="getTV">Get TV Show</button>
-            <button class="GFG"
-                    onclick="window.location.href = '../Pages/view.html';">
+            <button class="GFG">
                 Let's go to the news
             </button>
         </div>
@@ -274,7 +284,7 @@
             </div>
             <div class="container">
                 <label for="uname"><b>Mail</b></label>
-                <input type="text" id="lMail" placeholder="Enter Username" name="uname" required>
+                <input type="email" id="lMail" placeholder="Enter Username" name="uname" required>
 
                 <label for="psw"><b>Password</b></label>
                 <input type="password" id="lPassword" placeholder="Enter Password" name="psw" required>
@@ -302,7 +312,7 @@
                     <input type="date"  id="Birthday" placeholder="Enter Birthday" name="Birthday" required>
 
                     <label for="Mail"><b>Mail</b></label>
-                    <input type="text" id="Mail" placeholder="Enter Mail" name="Mail" required>
+                    <input type="email" id="Mail" placeholder="Enter Mail" name="Mail" required>
 
                     <label for="psw"><b>Password</b></label>
                     <input type="password" id="psw" placeholder="Enter Password" name="psw" required>

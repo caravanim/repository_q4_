@@ -11,7 +11,6 @@ namespace Q1.Models
     public class DBArticle
     {
        
-        //static List<Article> ArticleList;
         public int Insert(int Userid, Article article)
         {
             //ArticleList = new List<Article>();
@@ -93,25 +92,6 @@ namespace Q1.Models
             return command;
         }
 
-
-        //public List<Article> Read()
-        //{
-        //    return ArticleList;
-        //}
-
-        //public List<Article> Read(string Sname)
-        //{
-        //    List<Article> ArticalNewsList = new List<Article>();
-        //    foreach (Article f in ArticleList)
-        //    {
-        //        if (f.SeriesName == Sname)
-        //        {
-        //            ArticalNewsList.Add(f);
-        //        }
-        //    }
-        //    return ArticalNewsList;
-        //}
-
         public List<Article> Read(string Sname)
         {
             SqlConnection con = null;
@@ -154,11 +134,8 @@ namespace Q1.Models
                     {
                         conA.Close();
                     }
-
                 }
-
                 return AList;
-
             }
             catch (Exception ex)
             {
@@ -168,8 +145,6 @@ namespace Q1.Models
             {
                 con.Close();
             }
-
-
         }
        
         SqlCommand Createselect(string Sname, SqlConnection con)
@@ -238,7 +213,7 @@ namespace Q1.Models
                             A.SeriesHeader = (string)drSR["seriesHeader"];
                             A.SeriesShort = (string)drSR["SeriesShort"];
                             A.SeriesFound = (string)drSR["SeriesFound"];
-                            //A.Date = (DateTime)drSR["date"];
+                            A.Date = Convert.ToDateTime(drSR["date"]);
                             A.Image = (string)drSR["imageUrl"];
                             A.Link = (string)drSR["link"];
 

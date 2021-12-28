@@ -11,16 +11,9 @@ namespace ExeBeni1.DAL
 {
     public class DBReview
     {
-        static List<Review> ReviewList;
         public int Insert(int userid_R, Review review)
         {
-            if (ReviewList == null)
-            {
-                ReviewList = new List<Review>();
-            }
-            ReviewList.Add(review);
             SqlConnection con = null;
-
 
             try
             {
@@ -52,17 +45,24 @@ namespace ExeBeni1.DAL
 
         SqlCommand Createinsert(int userid_R, Review review, SqlConnection con)
         {
-            string sqlString = "INSERT INTO REVIEW_2022 ([userId],[articleId],[criticName],[email],[date],[rate],[reviewS]) "
-            + "VALUES (" + userid_R + ",'"+ review.ArticleId + ",'" + review.CriticName + "','" + review.Email + "','" + review.Date + "'," + review.Rate + ",'" + review.ReviewS + "')";
+            string sqlString = "INSERT INTO [REVIEW_2022] ([userId],[articleId],[criticName],[email],[date],[rate],[reviewS]) " +
+                "VALUES (@userId,@articleId,@criticName,@email,@date,@rate,@reviewS)";
             SqlCommand command = new SqlCommand(sqlString, con);
-            command.CommandTimeout = 5; // after 5 secoend it will return a timeout exception
-            command.CommandType = System.Data.CommandType.Text;
+            command.Parameters.AddWithValue("@userId", userid_R);
+            command.Parameters.AddWithValue("@articleId", review.ArticleId);
+            command.Parameters.AddWithValue("@criticName", review.CriticName);
+            command.Parameters.AddWithValue("@email", review.Email);
+            command.Parameters.AddWithValue("@date", review.Date);
+            command.Parameters.AddWithValue("@rate", review.Rate);
+            command.Parameters.AddWithValue("@reviewS", review.ReviewS);
             return command;
 
-           
+
+            
+
         }
 
-        public List<Review> Read(string UserName)
+        public List<Review> Read(int UserName)
         {
             SqlConnection con = null;
 
@@ -84,12 +84,9 @@ namespace ExeBeni1.DAL
                     A.Date = Convert.ToDateTime(dr["date"]);
                     A.Rate = (int)dr["rate"];
                     A.ReviewS = (string)dr["reviewS"];
-
-
                     RList.Add(A);
                 }
                 return RList;
-
             }
             catch (Exception ex)
             {
@@ -101,9 +98,9 @@ namespace ExeBeni1.DAL
             }
         }
 
-        SqlCommand Createselect(string UserName, SqlConnection con)
+       SqlCommand Createselect(int UserName, SqlConnection con)
         {
-            string sqlString = "select* from  REVIEW_2022 where id = @id";
+            string sqlString = "select* from  REVIEW_2022 where userId = @id";
             SqlCommand cmd = createCommand(con, sqlString);
 
             cmd.Parameters.AddWithValue("@id", UserName);
