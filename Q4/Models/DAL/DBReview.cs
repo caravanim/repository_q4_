@@ -57,10 +57,6 @@ namespace ExeBeni1.DAL
             command.Parameters.AddWithValue("@rate", review.Rate);
             command.Parameters.AddWithValue("@reviewS", review.ReviewS);
             return command;
-
-
-            
-
         }
 
         public List<Review> Read(int UserName)

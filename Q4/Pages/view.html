@@ -23,10 +23,11 @@
             j = 0;
             ajaxCall("GET", "../api/News?Sname=" + JSON.parse(localStorage[0]).UserId, "", getANewsSuccessCB, getANewsErrorCB);
             $("#pForm").submit(SubR);
-            $("#name").val(JSON.parse(localStorage[0]).Firstname);
+            $("#name").val(JSON.parse(localStorage[0]).Firstname + " " + JSON.parse(localStorage[0]).Lastname);
             $("#email").val(JSON.parse(localStorage[0]).Mail);
             $(document).on("click", "#login", loginf);
-            //$("#login").prop("value", "sign out");
+            $(document).on("click", ".btnAddRe", addReview);
+            $(document).on("click", ".close", closeFormWindow); 
             if ($("#login").val() == "Login") {
                 $("#register").hide();
                 $("#login").prop("value", "sign out")
@@ -34,6 +35,14 @@
                 $("#username").html(STR);
             }
         });
+
+        function closeFormWindow() {
+            $("#sendReviwe").hide();
+        }
+
+        function addReview() {
+            $("#sendReviwe").show();
+        }
 
         function loginf() {
             window.location.href = '../Pages/insert.html';
@@ -75,13 +84,11 @@
                 str += "<p>" + status2[i].Date + "</p>";
                 str += "<img src='" + status2[i].Image + "'/> <br/>";
                 str += "<a href='" + status2[i].Link + "'>link to the article</a><br/><br/>";
-                str += '<button type="button" ' + i + ' class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> send review </button><br/><br/>';
+                str += '<button type="button" id="'+ i +'" class="btnAddRe"> send review </button><br/><br/>';
                 tmp2.push(status2[i].SeriesId);
             }
             $("#ph2").html(str);
             console.log(tmp2);
-
-
         }
 
         function getANErrorCB(err) {
@@ -111,7 +118,7 @@
             $("#email").val("");
             $("#rate").val("");
             $("#review").val("");
-
+            $("#sendReviwe").hide();
             ajaxCall("POST", "../api/Review?userid_R=" + JSON.parse(localStorage[0]).UserId + "&user_M=" + JSON.parse(localStorage[0]).Mail + "&user_NF=" + JSON.parse(localStorage[0]).Firstname + "&user_NL=" + JSON.parse(localStorage[0]).Lastname , JSON.stringify(R), postRSuccess, postRError)
             return false;
         }
@@ -126,66 +133,52 @@
 
     </script>
 
-
 </head>
 <body>
-        <div id="ph">
+   
+    <div id="head1">
+        <div id="ph"> </div>
+        <div id="head">
+            <button class="GFG" onclick="window.location.href = '../Pages/AllReviews.html';">
+                Let's go to the reviews
+            </button>
+        </div>
+        <div id="log">
+            <label id="username"><b> </b></label>
+            <input type="button" id="login" value="Login" />
+            <button id="register">register</button>
+        </div>
+    </div>
+    <div id="ph2">
 
-        </div>
-        <div id="head1">
-            <div id="head">
-                <button class="GFG"
-                        onclick="window.location.href = '../Pages/AllReviews.html';">
-                    Let's go to the reviews
-                </button>
+    </div>
+
+    <div id="sendReviwe" class="modal">
+        <form id="pForm" class="modal-content animate" action="/action_page.php" method="post">
+            <div class="imgcontainer">
+                <span class="close" title="Close Modal">&times;</span>
+            </div>
+            <div class="container">
+                <div class="form-group">
+                    <label>your name</label>
+                    <input type="text" maxlength="30" class="form-control" id="name" placeholder="Enter the your name" required>
                 </div>
-                <div id="log">
-                    <label id="username"><b> </b></label>
-                    <input type="button" id="login" value="Login" />
-                    <button id="register">register</button>
+                <div class="form-group">
+                    <label>email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter the email" required>
                 </div>
-        </div>
-            <div id="ph2">
+                <div class="form-group">
+                    <label>rate</label>
+                    <input type="number" min="1" max="5" class="form-control" id="rate" placeholder="Enter the rate (between 1 and 5)" required />
+                </div>
+                <div class="form-group">
+                    <label>your Review</label>
+                    <input type="text" minlength="10" maxlength="200" class="form-control" id="review" placeholder="Enter the review" required />
+                </div>
+                <button type="submit" id="newUser">Submmit the review</button>
 
             </div>
-
-    <!--reviews form  -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Insert A Review</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="pForm">
-                        <div class="form-group">
-                            <label>your name</label>
-                            <input type="text" maxlength="30" class="form-control" id="name" placeholder="Enter the your name" required>
-                        </div>
-                        <div class="form-group">
-                            <label>email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter the email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>rate</label>
-                            <input type="number" min="1" max="5" class="form-control" id="rate" placeholder="Enter the rate (between 1 and 5)" required />
-                        </div>
-                        <div class="form-group">
-                            <label>your Review</label>
-                            <input type="text" minlength="10" maxlength="200" class="form-control" id="review" placeholder="Enter the review" required />
-                        </div>
-
-                        <input type="submit" value="Submit" />
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 
 </body>

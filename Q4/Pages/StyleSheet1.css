@@ -10,9 +10,9 @@ img {
     padding-left: 20px;
 }
 
-/*.top div {
-    float: left;
-}*/
+#ph {
+    padding-top: 6px;
+}
 
 #head1 {
     height: 30px;
@@ -30,7 +30,15 @@ img {
     padding-top: 5px;
 }
 
+#title {
+    text-align: right;
+    width: 55%;
+    font-size: 25px;
+}
 
+#head1 div{
+    float: left;
+}
 
 
 

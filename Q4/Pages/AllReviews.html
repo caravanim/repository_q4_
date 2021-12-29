@@ -28,7 +28,8 @@
 
         function getARSuccess(status3) {
             console.log(status3);
-            str = "<h1> All of your's reviews </h1> ";
+            $("#title").html("All of your's reviews");
+            str = "";
             for (var i = 0; i < status3.length; i++) {
                 str += "<div class='RVDIV'>";
                 str += "<h3> The critic name: " + JSON.parse(localStorage[0]).Firstname + " " + JSON.parse(localStorage[0]).Lastname + "</h3>";
@@ -53,6 +54,7 @@
 <body>
 
     <div id="head1">
+        <div id="title"></div>
         <div id="log">
             <label id="username"><b> </b></label>
             <input type="button" id="login" value="Login" />

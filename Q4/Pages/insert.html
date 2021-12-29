@@ -171,7 +171,6 @@
             console.log(err);
         }
 
-
         function getTV() {
             if (tmp != null) {
                 tmp = [];
@@ -194,7 +193,6 @@
         function getTVErrorCB(err) {
             console.log("The server was unable to retrieve the data");
         }
-
 
         function getTvNewsSuccessCB(NewsArray) {
 
@@ -249,13 +247,11 @@
                 Image: tmp[this.id].Image,
                 Link: tmp[this.id].Link,
             }
-
           
             console.log(B);
             console.log(JSON.stringify(B));
 
             ajaxCall("POST", "../api/News?Userid="+JSON.parse(localStorage[0]).UserId, JSON.stringify(B), postSuccess, postError)
-           
         }
 
         function postSuccess(status1) {
@@ -330,7 +326,7 @@
                     <input type="email" id="Mail" placeholder="Enter Mail" name="Mail" required>
 
                     <label for="psw"><b>Password</b></label>
-                    <input type="password" id="psw" placeholder="Enter Password" name="psw" required>
+                    <input type="password" min="8" id="psw" placeholder="Enter Password with at least 8 char" name="psw" required>
                     <div><p id="faildReg"> </p></div>
                     <button type="submit" id="newUser">Create an account</button>
 
