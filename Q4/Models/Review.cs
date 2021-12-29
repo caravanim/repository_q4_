@@ -7,7 +7,7 @@ using System.Web;
 namespace ExeBeni1.Models
 {
     public class Review
-    {
+    {   
         int articleId;
         string criticName;
         string email;

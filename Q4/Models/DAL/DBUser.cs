@@ -14,26 +14,55 @@ namespace Q4.Models.DAL
 
         public int Insert(User user)
         {
+           
             SqlConnection con = null;
+            SqlConnection conU = null;
             try
             {
-                con = Connect("Users_2022");
+                conU = Connect("Users_2022");
 
-                SqlCommand command = Createinsert(user, con);
+                SqlCommand command = CreateSelectU(user.Mail, conU);
 
                 int numEffected = command.ExecuteNonQuery();
-                return 1;
 
+                if (numEffected==1)
+                {
+                    return 0;
+                }
+
+                else
+                {
+                    try
+                    {
+                        con = Connect("Users_2022");
+
+                        SqlCommand commandU = Createinsert(user, con);
+
+                        int numEffectedU = commandU.ExecuteNonQuery();
+                        return numEffectedU;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("failed to create an user", ex);
+                    }
+                    finally
+                    {
+                        con.Close();
+                    }
+                }
             }
+
             catch (Exception ex)
             {
-                throw new Exception("failed to create an user", ex);
+                throw new Exception("The User is already exist", ex);
             }
             finally
             {
                 con.Close();
             }
-           
+
+
         }
 
         SqlConnection Connect(string connectstringname)
@@ -117,6 +146,16 @@ namespace Q4.Models.DAL
             return cmd;
         }
 
+
+        SqlCommand CreateSelectU(string mail, SqlConnection conU)
+        {
+            string sqlString = "select * from  Users_2022 where Mail = @mail";
+            SqlCommand cmd = createCommand(conU, sqlString);
+
+            cmd.Parameters.AddWithValue("@mail", mail);
+          
+            return cmd;
+        }
 
 
     }

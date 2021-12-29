@@ -92,12 +92,19 @@
             $("#Mail").val("");
             $("#psw").val("");
 
-            ajaxCall("POST", "../api/Users", JSON.stringify(R), postUFSuccess, postUFError)
+            ajaxCall("Post", "../api/Users", JSON.stringify(R), postUFSuccess, postUFError)
             $("#Registerform").hide();
             return false;
         }
 
         function postUFSuccess(status) {
+
+            if (status==1) {
+                alert("The user has been created");
+            }
+            else {
+                alert("The user is already exist");
+            }
             console.log(status);
         }
 
@@ -254,6 +261,7 @@
 
         }
         function postError(Error) {
+            alert("You already added this article to your new's");
             console.log("The data was not uploaded to the server");
         }
     </script>

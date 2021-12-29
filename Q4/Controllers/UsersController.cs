@@ -19,10 +19,7 @@ namespace Q4.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
+        
 
         public User Get(string mail , string password)
         {
