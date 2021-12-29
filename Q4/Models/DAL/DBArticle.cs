@@ -13,50 +13,93 @@ namespace Q1.Models
        
         public int Insert(int Userid, Article article)
         {
-            //ArticleList = new List<Article>();
-            //if (ArticleList == null)
-            //{
-            //    ArticleList = new List<Article>();
-            //}
-            //ArticleList.Add(article);
-
             SqlConnection con = null;
-            SqlConnection conUA = null;
+            SqlConnection conAdd = null;
+            con = Connect("ARTICAL_2022");
+            conAdd = Connect("UsersArticles_2022");
             int numEffected = 0;
             int numEffectedUA = 0;
 
-            try
+            try // בודק האם הכתבה קיימת בדאטה
             {
-               
-                con = Connect("ARTICAL_2022");
-                conUA = ConnectUA("UsersArticles_2022");
+                SqlCommand commandExistArticle = CreateSelectExistArticle(article.SeriesId, con);
+                SqlDataReader drExistArticle = commandExistArticle.ExecuteReader(CommandBehavior.CloseConnection);
+                
+                if (drExistArticle.Read()) //קיים בדאטה של הכתבות נבדוק אם קיים בדאטה של כתבות משתמש
+                {
+                    try { 
+                         SqlCommand commandExistInUserA = CreateSelectExistInUserA(Userid, article.SeriesId, conAdd);
+                         SqlDataReader drExistInUserA = commandExistInUserA.ExecuteReader(CommandBehavior.CloseConnection);
 
-                SqlCommand command = Createinsert(article, con);
-                SqlCommand commandUA = CreateinsertUA(Userid,article, conUA);
+                         if (drExistInUserA.Read())//קיים בדאטה של הכתבות וגם בדאטה של המתשתמש
+                         {
+                           return 0;
+                         }
+                         else //קיים בדאטה של הכתבות ולא קיים בדאטה של המשתמש
+                         {
+                            //drExistInUserA.Close();
+                            drExistArticle.Close();
+                           
+                            try
+                             {
+                               SqlCommand commandUA = CreateinsertUA(Userid, article, conAdd);
+                               numEffectedUA = commandUA.ExecuteNonQuery();
+                               return numEffectedUA;
+                             }
+                             catch (Exception ex)
+                             {
+                                  throw new Exception("failed to insert an article", ex);
+                               }
+                              finally
+                               {
+                                 conAdd.Close();
+                                 con.Close();
+                               }
+                          }
+                     }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("failed to insert an article", ex);
+                    }
+                    finally
+                    {
+                        conAdd.Close();
+                        con.Close();
+                    }
+                }
+                else // לא קיים בדאטה של הכתבות נכניס לדאטה של הכתובת ולדאטה של המשתמש
+                {
+                    try
+                    {
+                        SqlCommand command = Createinsert(article, con);
+                        SqlCommand commandUAF = CreateinsertUA(Userid, article, conAdd);
 
-
-                numEffected = command.ExecuteNonQuery();
-                numEffectedUA = commandUA.ExecuteNonQuery();
+                        numEffected = command.ExecuteNonQuery();
+                        numEffectedUA = commandUAF.ExecuteNonQuery();
+                        return numEffected + numEffectedUA;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("failed to insert an article", ex);
+                    }
+                    finally
+                    {
+                        conAdd.Close();
+                        con.Close();
+                    }
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("failed to insert an article", ex);
+                throw new Exception("The User is already exist", ex);
             }
             finally
             {
-                con.Close();
+                conAdd.Close();
             }
-            return numEffected+ numEffectedUA;
+
         }
 
-        SqlConnection ConnectUA(string connectstringname)
-        {
-            string connectionString = WebConfigurationManager.ConnectionStrings[connectstringname].ConnectionString;
-            SqlConnection con = new SqlConnection(connectionString);
-            con.Open();
-            return con;
-        }
-        
         SqlConnection Connect ( string connectstringname)
         {
             string connectionString = WebConfigurationManager.ConnectionStrings[connectstringname].ConnectionString;
@@ -257,5 +300,38 @@ namespace Q1.Models
             return cmd;
         }
 
+        SqlCommand CreateSelectAdd(int Userid, int ArticleId, SqlConnection conAdd)
+        {
+            string sqlString = "select * from  UsersArticles_2022 where seriesId = @AI and id = @UI";
+            SqlCommand cmd = createCommand(conAdd, sqlString);
+
+            cmd.Parameters.AddWithValue("@AI", ArticleId);
+            cmd.Parameters.AddWithValue("@UI", Userid);
+
+            return cmd;
+        }
+
+        SqlCommand CreateSelectExistArticle(int ArticleId, SqlConnection con)
+        {
+            string sqlString = "select * from  ARTICAL_2022 where seriesId = @SI";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@SI", ArticleId);
+
+            return cmd;
+        }
+
+        SqlCommand CreateSelectExistInUserA(int Userid, int ArticleId, SqlConnection con)
+        {
+            string sqlString = "select * from  UsersArticles_2022 where seriesId = @SI and id = @userId";
+            SqlCommand cmd = createCommand(con, sqlString);
+
+            cmd.Parameters.AddWithValue("@SI", ArticleId);
+            cmd.Parameters.AddWithValue("@userId", Userid);
+
+            return cmd;
+        }
+
+        
     }
 }

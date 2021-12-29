@@ -16,16 +16,15 @@ namespace Q4.Models.DAL
         {
            
             SqlConnection con = null;
-            SqlConnection conU = null;
+            con = Connect("Users_2022");
             try
             {
+                SqlConnection conU = null;
                 conU = Connect("Users_2022");
+                SqlCommand commandU = CreateSelectU(user, conU);
+                SqlDataReader drU = commandU.ExecuteReader(CommandBehavior.CloseConnection);
 
-                SqlCommand command = CreateSelectU(user.Mail, conU);
-
-                int numEffected = command.ExecuteNonQuery();
-
-                if (numEffected==1)
+                if (drU.Read())
                 {
                     return 0;
                 }
@@ -34,13 +33,10 @@ namespace Q4.Models.DAL
                 {
                     try
                     {
-                        con = Connect("Users_2022");
+                        SqlCommand command = Createinsert(user, con);
 
-                        SqlCommand commandU = Createinsert(user, con);
-
-                        int numEffectedU = commandU.ExecuteNonQuery();
-                        return numEffectedU;
-
+                        int numEffected = command.ExecuteNonQuery();
+                        return numEffected;
                     }
                     catch (Exception ex)
                     {
@@ -48,6 +44,7 @@ namespace Q4.Models.DAL
                     }
                     finally
                     {
+                        conU.Close();
                         con.Close();
                     }
                 }
@@ -147,12 +144,12 @@ namespace Q4.Models.DAL
         }
 
 
-        SqlCommand CreateSelectU(string mail, SqlConnection conU)
+        SqlCommand CreateSelectU(User user, SqlConnection conU)
         {
             string sqlString = "select * from  Users_2022 where Mail = @mail";
             SqlCommand cmd = createCommand(conU, sqlString);
 
-            cmd.Parameters.AddWithValue("@mail", mail);
+            cmd.Parameters.AddWithValue("@mail", user.Mail);
           
             return cmd;
         }

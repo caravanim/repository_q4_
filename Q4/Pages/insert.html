@@ -45,6 +45,7 @@
 
 
         function closeWindow() {
+            $("#faildReg").html("");
             $("#logformat").hide();
             $("#Registerform").hide();
             $("#FirstName").val("");
@@ -86,24 +87,25 @@
                 Password: psw
             }
 
-            $("#FirstName").val("");
-            $("#LastName").val("");
-            $("#Birthday").val("");
-            $("#Mail").val("");
-            $("#psw").val("");
-
             ajaxCall("Post", "../api/Users", JSON.stringify(R), postUFSuccess, postUFError)
-            $("#Registerform").hide();
+            
             return false;
         }
 
         function postUFSuccess(status) {
 
-            if (status==1) {
+            if (status == 1) {
                 alert("The user has been created");
+                $("#Registerform").hide();
+                $("#FirstName").val("");
+                $("#LastName").val("");
+                $("#Birthday").val("");
+                $("#Mail").val("");
+                $("#psw").val("");
             }
             else {
-                alert("The user is already exist");
+                $("#faildReg").html("The user is already exist");
+                $("#Mail").val("");
             }
             console.log(status);
         }
@@ -257,11 +259,16 @@
         }
 
         function postSuccess(status1) {
+            if (status1 == 0) {
+                alert("You already added this article to your new's");
+            }
+            else {
+                alert("The article was add");
+            }
             console.log(status1);
 
         }
         function postError(Error) {
-            alert("You already added this article to your new's");
             console.log("The data was not uploaded to the server");
         }
     </script>
@@ -314,17 +321,17 @@
                     <input type="text" id="FirstName" placeholder="Enter First Name" name="FirstName" required>
 
                     <label for="Lname"><b>Last Name</b></label>
-                    <input type="text"  id="LastName" placeholder="Enter Last Name" name="LastName" required>
+                    <input type="text" id="LastName" placeholder="Enter Last Name" name="LastName" required>
 
                     <label for="Lname"><b>Birthday</b></label>
-                    <input type="date"  id="Birthday" placeholder="Enter Birthday" name="Birthday" required>
+                    <input type="date" id="Birthday" placeholder="Enter Birthday" name="Birthday" required>
 
                     <label for="Mail"><b>Mail</b></label>
                     <input type="email" id="Mail" placeholder="Enter Mail" name="Mail" required>
 
                     <label for="psw"><b>Password</b></label>
                     <input type="password" id="psw" placeholder="Enter Password" name="psw" required>
-
+                    <div><p id="faildReg"> </p></div>
                     <button type="submit" id="newUser">Create an account</button>
 
                 </div>

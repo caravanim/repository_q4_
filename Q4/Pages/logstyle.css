@@ -140,6 +140,6 @@ span.psw {
     }
 }
 
-#faildlogin {
+#faildlogin, #faildReg {
     color: red;
 }
