@@ -37,9 +37,7 @@ namespace Q1.Models
                          }
                          else //קיים בדאטה של הכתבות ולא קיים בדאטה של המשתמש
                          {
-                            //drExistInUserA.Close();
-                            drExistArticle.Close();
-                           
+                            
                             try
                              {
                                SqlCommand commandUA = CreateinsertUA(Userid, article, conAdd);

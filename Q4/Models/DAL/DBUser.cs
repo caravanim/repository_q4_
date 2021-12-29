@@ -107,12 +107,13 @@ namespace Q4.Models.DAL
                 SqlCommand selectcommand = Createselect(mail, password, con);
 
                 SqlDataReader dr = selectcommand.ExecuteReader(CommandBehavior.CloseConnection);
-                //User U = new User();
+              
                 User newUser = new User();
                 if (dr.Read() == true)
                 {
                    newUser.UserId = (int)dr["id"]; 
                    newUser.Firstname = (string)dr["Firstname"];
+                   newUser.Lastname = (string)dr["Lastname"];
                    newUser.Password = (string)dr["Password"];
                    newUser.Mail = (string)dr["Mail"];
                 }

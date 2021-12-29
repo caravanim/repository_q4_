@@ -6,12 +6,13 @@ using System.Web;
 using System.Data.SqlClient;
 using System.Web.Configuration;
 using System.Data;
+using Q4.Models;
 
 namespace ExeBeni1.DAL
 {
     public class DBReview
     {
-        public int Insert(int userid_R, Review review)
+        public int Insert(int userid_R, string user_M, string user_NF, string user_NL, Review review)
         {
             SqlConnection con = null;
 
@@ -19,7 +20,7 @@ namespace ExeBeni1.DAL
             {
                 con = Connect("REVIEW_2022");
 
-                SqlCommand command = Createinsert(userid_R, review, con);
+                SqlCommand command = Createinsert(userid_R, user_M, user_NF, user_NL, review, con);
 
                 int numEffected = command.ExecuteNonQuery();
 
@@ -43,15 +44,15 @@ namespace ExeBeni1.DAL
             return con;
         }
 
-        SqlCommand Createinsert(int userid_R, Review review, SqlConnection con)
+        SqlCommand Createinsert(int userid_R, string user_M, string user_NF, string user_NL, Review review, SqlConnection con)
         {
             string sqlString = "INSERT INTO [REVIEW_2022] ([userId],[articleId],[criticName],[email],[date],[rate],[reviewS]) " +
                 "VALUES (@userId,@articleId,@criticName,@email,@date,@rate,@reviewS)";
             SqlCommand command = new SqlCommand(sqlString, con);
             command.Parameters.AddWithValue("@userId", userid_R);
             command.Parameters.AddWithValue("@articleId", review.ArticleId);
-            command.Parameters.AddWithValue("@criticName", review.CriticName);
-            command.Parameters.AddWithValue("@email", review.Email);
+            command.Parameters.AddWithValue("@criticName", user_NF + " " + user_NL);
+            command.Parameters.AddWithValue("@email", user_M);
             command.Parameters.AddWithValue("@date", review.Date);
             command.Parameters.AddWithValue("@rate", review.Rate);
             command.Parameters.AddWithValue("@reviewS", review.ReviewS);
@@ -79,8 +80,8 @@ namespace ExeBeni1.DAL
                 {
                     Review A = new Review();
                     A.ArticleId = (int)dr["articleId"];
-                    A.CriticName = (string)dr["criticName"];
-                    A.Email = (string)dr["email"];
+                    //A.CriticName = (string)dr["criticName"];
+                    //A.Email = (string)dr["email"];
                     A.Date = Convert.ToDateTime(dr["date"]);
                     A.Rate = (int)dr["rate"];
                     A.ReviewS = (string)dr["reviewS"];

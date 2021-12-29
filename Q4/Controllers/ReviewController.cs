@@ -1,4 +1,5 @@
 ﻿using ExeBeni1.Models;
+using Q4.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,9 @@ namespace ExeBeni1.Controllers
         //}
 
         // POST api/<controller>
-        public int Post(int userid_R, [FromBody] Review review)
+        public int Post(int userid_R, string user_M, string user_NF, string user_NL, [FromBody] Review review)
         {
-            return review.Insert(userid_R);
+            return review.Insert(userid_R, user_M, user_NF, user_NL);
         }
 
 

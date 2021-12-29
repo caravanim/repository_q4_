@@ -102,8 +102,6 @@
             R = {
                 ArticleId: tmp2[j],
                 Date: new Date(),
-                CriticName: criticName,
-                Email: email,
                 Rate: rate,
                 ReviewS: review
             }
@@ -114,7 +112,7 @@
             $("#rate").val("");
             $("#review").val("");
 
-            ajaxCall("POST", "../api/Review?userid_R="+JSON.parse(localStorage[0]).UserId, JSON.stringify(R), postRSuccess, postRError)
+            ajaxCall("POST", "../api/Review?userid_R=" + JSON.parse(localStorage[0]).UserId + "&user_M=" + JSON.parse(localStorage[0]).Mail + "&user_NF=" + JSON.parse(localStorage[0]).Firstname + "&user_NL=" + JSON.parse(localStorage[0]).Lastname , JSON.stringify(R), postRSuccess, postRError)
             return false;
         }
 

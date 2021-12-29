@@ -22,9 +22,6 @@
             }
         });
 
-
-
-      
         function loginf() {
             window.location.href = '../Pages/insert.html';
         }
@@ -34,10 +31,10 @@
             str = "<h1> All of your's reviews </h1> ";
             for (var i = 0; i < status3.length; i++) {
                 str += "<div class='RVDIV'>";
-                str += "<h3> The critic name: " + status3[i].CriticName + "</h3>";
+                str += "<h3> The critic name: " + JSON.parse(localStorage[0]).Firstname + " " + JSON.parse(localStorage[0]).Lastname + "</h3>";
                 str += "<p>Article id: " + status3[i].ArticleId + "</p>";
                 str += "<p>Date: " + status3[i].Date + "</p>";
-                str += "<p>Email: " + status3[i].Email + "</p>";
+                str += "<p>Email: " + JSON.parse(localStorage[0]).Mail + "</p>";
                 str += "<p> Article rating: " + status3[i].Rate + "</p>";
                 str += "<p> The review: " + status3[i].ReviewS + "</p><br/><br/>";
                 str += "</div><br/><br/> ";
