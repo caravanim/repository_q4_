@@ -4,6 +4,11 @@ img {
     height: 250px;
 }
 
+#ph2 {
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
 .RVDIV {
     Border: 1px solid black;
     width: 400px;
