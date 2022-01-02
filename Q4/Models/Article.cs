@@ -13,7 +13,7 @@ namespace Q1.Models
         string seriesHeader;
         string seriesShort;
         string seriesFound;
-        DateTime date;
+        string date;
         string image;
         string link;
 
@@ -22,12 +22,12 @@ namespace Q1.Models
         public string SeriesHeader { get => seriesHeader; set => seriesHeader = value; }
         public string SeriesShort { get => seriesShort; set => seriesShort = value; }
         public string SeriesFound { get => seriesFound; set => seriesFound = value; }
-        public DateTime Date { get => date; set => date = value; }
+        public string Date { get => date; set => date = value; }
         public string Image { get => image; set => image = value; }
         public string Link { get => link; set => link = value; }
 
         public Article() { }
-        public Article(int SeriesId, string SeriesName, string SeriesHeader, string SeriesShort, string SeriesFound, DateTime Date, string Image, string Link)
+        public Article(int SeriesId, string SeriesName, string SeriesHeader, string SeriesShort, string SeriesFound, string Date, string Image, string Link)
         {
             this.SeriesId = SeriesId;
             this.SeriesName = SeriesName;

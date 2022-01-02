@@ -76,8 +76,6 @@ namespace ExeBeni1.DAL
                 {
                     Review A = new Review();
                     A.ArticleId = (int)dr["articleId"];
-                    //A.CriticName = (string)dr["criticName"];
-                    //A.Email = (string)dr["email"];
                     A.Date = Convert.ToDateTime(dr["date"]);
                     A.Rate = (int)dr["rate"];
                     A.ReviewS = (string)dr["reviewS"];

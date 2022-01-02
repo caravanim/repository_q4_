@@ -113,6 +113,7 @@ namespace Q1.Models
             article.SeriesFound = article.SeriesFound.Replace("'", "''");
             article.SeriesName = article.SeriesName.Replace("'", "''");
             article.Image = article.Image.Replace("'", "''");
+            //String formatedDate = article.Date.ToString("mm-dd-yyyy HH:mm:ss tt");
 
             string sqlString = "INSERT INTO ARTICAL_2022 ([seriesId],[seriesName],[seriesHeader],[seriesShort],[seriesFound],[date],[imageUrl], [link] ) "
                 + "VALUES (" + article.SeriesId + ",'" + article.SeriesName + "','" + article.SeriesHeader + "','" + article.SeriesShort + "','" + article.SeriesFound + "','" + article.Date + "','" + article.Image + "','" + article.Link+"')";
@@ -254,7 +255,7 @@ namespace Q1.Models
                             A.SeriesHeader = (string)drSR["seriesHeader"];
                             A.SeriesShort = (string)drSR["SeriesShort"];
                             A.SeriesFound = (string)drSR["SeriesFound"];
-                            A.Date = Convert.ToDateTime(drSR["date"]);
+                            A.Date = (string)(drSR["date"]);
                             A.Image = (string)drSR["imageUrl"];
                             A.Link = (string)drSR["link"];
 
